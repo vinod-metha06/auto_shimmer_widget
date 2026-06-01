@@ -1,4 +1,4 @@
-part of auto_shimmer_render;
+part of '../render_auto_shimmer.dart';
 
 extension RenderAutoShimmerBasicPainters on RenderAutoShimmer {
   void _paintImagePlaceholder(
@@ -79,7 +79,7 @@ extension RenderAutoShimmerBasicPainters on RenderAutoShimmer {
     final indent = divider.indent ?? 0.0;
     final endIndent = divider.endIndent ?? 0.0;
 
-    final paint = this._buildDepthPaint(depth);
+    final paint = _buildDepthPaint(depth);
 
     final y = offset.dy + size.height / 2;
 
@@ -104,7 +104,7 @@ extension RenderAutoShimmerBasicPainters on RenderAutoShimmer {
     final indent = divider.indent ?? 0.0;
     final endIndent = divider.endIndent ?? 0.0;
 
-    final paint = this._buildDepthPaint(depth);
+    final paint = _buildDepthPaint(depth);
 
     final x = offset.dx + size.width / 2;
 
@@ -155,7 +155,7 @@ extension RenderAutoShimmerBasicPainters on RenderAutoShimmer {
     Size size,
     int depth,
   ) {
-    final paint = this._buildDepthPaint(depth);
+    final paint = _buildDepthPaint(depth);
 
     final dimension = size.shortestSide.clamp(18.0, 28.0);
 
@@ -181,7 +181,7 @@ extension RenderAutoShimmerBasicPainters on RenderAutoShimmer {
     Size size,
     int depth,
   ) {
-    final paint = this._buildDepthPaint(depth);
+    final paint = _buildDepthPaint(depth);
 
     final dimension = size.shortestSide.clamp(32.0, 64.0);
 
@@ -209,7 +209,7 @@ extension RenderAutoShimmerBasicPainters on RenderAutoShimmer {
       return;
     }
 
-    final paint = this._buildDepthPaint(depth);
+    final paint = _buildDepthPaint(depth);
 
     final rect = Rect.fromLTWH(
       offset.dx,

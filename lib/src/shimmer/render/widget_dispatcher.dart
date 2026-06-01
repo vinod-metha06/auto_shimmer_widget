@@ -1,4 +1,4 @@
-part of auto_shimmer_render;
+part of '../render_auto_shimmer.dart';
 
 extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
   void _paintWidget(
@@ -34,65 +34,65 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
     }
 
     if (widget is Text) {
-      this._paintText(canvas, offset, availableSize, depth);
+      _paintText(canvas, offset, availableSize, depth);
       return;
     }
 
     if (widget is RichText) {
-      this._paintRichText(canvas, widget, offset, availableSize, depth);
+      _paintRichText(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is TextField || widget is TextFormField) {
-      this._paintTextField(canvas, offset, availableSize, depth);
+      _paintTextField(canvas, offset, availableSize, depth);
       return;
     }
 
-    if (this._isImageLikeWidget(widget)) {
-      this._paintImagePlaceholder(canvas, offset, availableSize, depth);
+    if (_isImageLikeWidget(widget)) {
+      _paintImagePlaceholder(canvas, offset, availableSize, depth);
       return;
     }
 
     if (widget is Icon) {
-      this._paintIcon(canvas, offset, availableSize, depth);
+      _paintIcon(canvas, offset, availableSize, depth);
       return;
     }
 
     if (widget is CircleAvatar || widget is ClipOval) {
-      this._paintCircle(canvas, offset, availableSize, depth);
+      _paintCircle(canvas, offset, availableSize, depth);
       return;
     }
 
     if (widget is Divider) {
-      this._paintDivider(canvas, widget, offset, availableSize, depth);
+      _paintDivider(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is VerticalDivider) {
-      this._paintVerticalDivider(canvas, widget, offset, availableSize, depth);
+      _paintVerticalDivider(canvas, widget, offset, availableSize, depth);
       return;
     }
 
-    if (this._isButtonLikeWidget(widget)) {
-      this._paintButtonLike(canvas, widget, offset, availableSize, depth);
+    if (_isButtonLikeWidget(widget)) {
+      _paintButtonLike(canvas, widget, offset, availableSize, depth);
       return;
     }
 
-    if (this._isChipLikeWidget(widget)) {
-      this._paintChipLike(canvas, widget, offset, availableSize, depth);
+    if (_isChipLikeWidget(widget)) {
+      _paintChipLike(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is ListTile) {
-      this._paintListTile(canvas, widget, offset, availableSize, depth);
+      _paintListTile(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is Padding) {
-      final padding = this._resolveEdgeInsets(widget.padding);
+      final padding = _resolveEdgeInsets(widget.padding);
 
       if (widget.child != null) {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           Offset(offset.dx + padding.left, offset.dy + padding.top),
@@ -108,9 +108,9 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
     }
 
     if (widget is Container) {
-      final margin = this._resolveEdgeInsets(widget.margin);
+      final margin = _resolveEdgeInsets(widget.margin);
 
-      final outerSize = this._resolveContainerSize(
+      final outerSize = _resolveContainerSize(
         widget,
         availableSize,
       );
@@ -130,8 +130,8 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
 
       final shouldPaintContainer = hasVisualDecoration || widget.child == null;
 
-      final imageChild = this._extractImageLikeChild(widget.child);
-      final hasDecorationImage = this._hasDecorationImage(widget);
+      final imageChild = _extractImageLikeChild(widget.child);
+      final hasDecorationImage = _hasDecorationImage(widget);
 
       final isImagePlaceholderContainer =
           (imageChild != null || hasDecorationImage) &&
@@ -145,31 +145,31 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
           containerSize.height < 80 ? 140 : containerSize.height,
         );
 
-        this._paintImagePlaceholder(
+        _paintImagePlaceholder(
           canvas,
           containerOffset,
           safeSize,
           depth + 2,
-          radius: this._extractContainerRadius(widget),
+          radius: _extractContainerRadius(widget),
         );
 
         return;
       }
 
       if (shouldPaintContainer) {
-        this._paintRect(
+        _paintRect(
           canvas,
           containerOffset,
           containerSize,
           depth,
-          radius: this._extractContainerRadius(widget),
+          radius: _extractContainerRadius(widget),
         );
       }
 
       if (widget.child != null) {
-        final padding = this._resolveEdgeInsets(widget.padding);
+        final padding = _resolveEdgeInsets(widget.padding);
 
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           Offset(
@@ -194,7 +194,7 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
       );
 
       if (widget.child != null) {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           offset,
@@ -218,7 +218,7 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
           offset.dy + (availableSize.height - childSize.height) / 2,
         );
 
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           childOffset,
@@ -232,7 +232,7 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
 
     if (widget is Align) {
       if (widget.child != null) {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           offset,
@@ -246,7 +246,7 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
 
     if (widget is FittedBox) {
       if (widget.child != null) {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           offset,
@@ -260,7 +260,7 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
 
     if (widget is ClipRRect) {
       if (widget.child != null) {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           offset,
@@ -273,9 +273,9 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
     }
 
     if (widget is DecoratedBox) {
-      this._paintRect(canvas, offset, availableSize, depth);
+      _paintRect(canvas, offset, availableSize, depth);
 
-      this._paintWidget(
+      _paintWidget(
         canvas,
         widget.child!,
         offset,
@@ -287,13 +287,13 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
     }
 
     if (widget is Card) {
-      this._paintCard(canvas, widget, offset, availableSize, depth);
+      _paintCard(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is Material) {
       if (widget.child != null) {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           offset,
@@ -306,7 +306,7 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
 
     if (widget is InkWell) {
       if (widget.child != null) {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           offset,
@@ -319,7 +319,7 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
 
     if (widget is GestureDetector) {
       if (widget.child != null) {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           offset,
@@ -332,7 +332,7 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
 
     if (widget is SingleChildScrollView) {
       if (widget.child != null) {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           widget.child!,
           offset,
@@ -344,22 +344,22 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
     }
 
     if (widget is AspectRatio) {
-      this._paintAspectRatio(canvas, widget, offset, availableSize, depth);
+      _paintAspectRatio(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is Stack) {
-      this._paintStack(canvas, widget, offset, availableSize, depth);
+      _paintStack(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is Wrap) {
-      this._paintWrap(canvas, widget, offset, availableSize, depth);
+      _paintWrap(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is Expanded) {
-      this._paintWidget(
+      _paintWidget(
         canvas,
         widget.child,
         offset,
@@ -370,7 +370,7 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
     }
 
     if (widget is Flexible) {
-      this._paintWidget(
+      _paintWidget(
         canvas,
         widget.child,
         offset,
@@ -381,25 +381,25 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
     }
 
     if (widget is Row) {
-      this._paintRow(canvas, widget, offset, availableSize, depth);
+      _paintRow(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is Column) {
-      this._paintColumn(canvas, widget, offset, availableSize, depth);
+      _paintColumn(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is ListView) {
-      this._paintListView(canvas, widget, offset, availableSize, depth);
+      _paintListView(canvas, widget, offset, availableSize, depth);
       return;
     }
 
     if (widget is GridView) {
-      this._paintGridView(canvas, widget, offset, availableSize, depth);
+      _paintGridView(canvas, widget, offset, availableSize, depth);
       return;
     }
 
-    this._paintRect(canvas, offset, availableSize, depth);
+    _paintRect(canvas, offset, availableSize, depth);
   }
 }

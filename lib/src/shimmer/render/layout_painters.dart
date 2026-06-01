@@ -1,4 +1,4 @@
-part of auto_shimmer_render;
+part of '../render_auto_shimmer.dart';
 
 extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
   void _paintCard(
@@ -8,7 +8,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     Size size,
     int depth,
   ) {
-    final margin = this._resolveEdgeInsets(card.margin);
+    final margin = _resolveEdgeInsets(card.margin);
 
     final cardOffset = Offset(
       offset.dx + margin.left,
@@ -20,16 +20,16 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       max(0, size.height - margin.vertical),
     );
 
-    this._paintRect(
+    _paintRect(
       canvas,
       cardOffset,
       cardSize,
       depth,
-      radius: this._extractCardRadius(card),
+      radius: _extractCardRadius(card),
     );
 
     if (card.child != null) {
-      this._paintWidget(
+      _paintWidget(
         canvas,
         card.child!,
         cardOffset,
@@ -62,7 +62,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
   ) {
     for (final child in stack.children) {
       if (child is Positioned) {
-        this._paintPositioned(
+        _paintPositioned(
           canvas,
           child,
           offset,
@@ -70,7 +70,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
           depth,
         );
       } else {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           child,
           offset,
@@ -88,7 +88,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     Size stackSize,
     int depth,
   ) {
-    final estimatedChildSize = this._estimatePositionedChildSize(
+    final estimatedChildSize = _estimatePositionedChildSize(
       positioned.child,
       stackSize,
     );
@@ -126,7 +126,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
             ? stackSize.height - positioned.bottom! - height
             : 0.0;
 
-    this._paintWidget(
+    _paintWidget(
       canvas,
       positioned.child,
       Offset(
@@ -154,7 +154,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     for (final child in wrap.children) {
       if (dy >= bottom) break;
 
-      final childSize = this._estimateWrapChildSize(child, size);
+      final childSize = _estimateWrapChildSize(child, size);
 
       if (dx + childSize.width > maxX) {
         dx = offset.dx;
@@ -163,7 +163,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
 
       if (dy >= bottom) break;
 
-      this._paintWidget(
+      _paintWidget(
         canvas,
         child,
         Offset(dx, dy),
@@ -187,7 +187,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       size.height.clamp(30.0, 40.0),
     );
 
-    this._paintRect(
+    _paintRect(
       canvas,
       offset,
       chipSize,
@@ -195,7 +195,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       radius: BorderRadius.circular(40),
     );
 
-    this._paintText(
+    _paintText(
       canvas,
       Offset(offset.dx + 12, offset.dy + 8),
       Size(chipSize.width - 24, 16),
@@ -223,7 +223,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     final childSize = Size(width, height);
 
     if (aspectRatio.child != null) {
-      this._paintWidget(
+      _paintWidget(
         canvas,
         aspectRatio.child!,
         offset,
@@ -231,7 +231,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
         depth: depth + 1,
       );
     } else {
-      this._paintRect(canvas, offset, childSize, depth);
+      _paintRect(canvas, offset, childSize, depth);
     }
   }
 
@@ -247,7 +247,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
         (widget.iconSize ?? 24) + 20,
       );
 
-      this._paintRect(
+      _paintRect(
         canvas,
         offset,
         buttonSize,
@@ -259,7 +259,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     }
 
     if (widget is FloatingActionButton) {
-      this._paintCircle(
+      _paintCircle(
         canvas,
         offset,
         const Size(56, 56),
@@ -273,7 +273,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       size.height.clamp(40.0, 52.0),
     );
 
-    this._paintRect(
+    _paintRect(
       canvas,
       offset,
       buttonSize,
@@ -281,7 +281,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       radius: BorderRadius.circular(40),
     );
 
-    this._paintText(
+    _paintText(
       canvas,
       Offset(
         offset.dx + 20,
@@ -310,7 +310,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
         break;
       }
 
-      this._paintText(
+      _paintText(
         canvas,
         Offset(offset.dx, dy),
         Size(
@@ -335,7 +335,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       fieldHeight,
     );
 
-    this._paintRect(
+    _paintRect(
       canvas,
       offset,
       fieldSize,
@@ -343,7 +343,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       radius: BorderRadius.circular(12),
     );
 
-    this._paintText(
+    _paintText(
       canvas,
       Offset(
         offset.dx + 16,
@@ -361,13 +361,12 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     Size size,
     int depth,
   ) {
-    final children = this._extractSliverChildren(listView.childrenDelegate);
+    final children = _extractSliverChildren(listView.childrenDelegate);
 
-    final fallbackCount =
-        this._resolveBuilderItemCount(listView.childrenDelegate);
+    final fallbackCount = _resolveBuilderItemCount(listView.childrenDelegate);
 
     if (children.isEmpty) {
-      this._paintRepeatedListItems(
+      _paintRepeatedListItems(
         canvas,
         offset,
         size,
@@ -383,9 +382,9 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     for (final child in children) {
       if (dy >= bottom) break;
 
-      final itemHeight = this._estimateWidgetHeight(child, size.height) ?? 90.0;
+      final itemHeight = _estimateWidgetHeight(child, size.height) ?? 90.0;
 
-      this._paintWidget(
+      _paintWidget(
         canvas,
         child,
         Offset(offset.dx, dy),
@@ -413,7 +412,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     for (int index = 0; index < count; index++) {
       if (dy >= bottom) break;
 
-      this._paintRect(
+      _paintRect(
         canvas,
         Offset(offset.dx, dy),
         Size(size.width, itemHeight),
@@ -423,7 +422,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
 
       const avatarSize = 48.0;
 
-      this._paintCircle(
+      _paintCircle(
         canvas,
         Offset(
           offset.dx + 16,
@@ -433,14 +432,14 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
         depth + 2,
       );
 
-      this._paintText(
+      _paintText(
         canvas,
         Offset(offset.dx + 80, dy + 22),
         Size(size.width - 120, 20),
         depth + 2,
       );
 
-      this._paintText(
+      _paintText(
         canvas,
         Offset(offset.dx + 80, dy + 50),
         Size(size.width - 140, 18),
@@ -458,7 +457,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     Size size,
     int depth,
   ) {
-    final children = this._extractSliverChildren(gridView.childrenDelegate);
+    final children = _extractSliverChildren(gridView.childrenDelegate);
 
     final delegate = gridView.gridDelegate;
 
@@ -480,7 +479,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     final itemHeight = itemWidth / childAspectRatio;
 
     final itemCount = children.isEmpty
-        ? this._resolveBuilderItemCount(gridView.childrenDelegate)
+        ? _resolveBuilderItemCount(gridView.childrenDelegate)
         : children.length;
 
     final bottom = offset.dy + size.height;
@@ -495,14 +494,14 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       if (dy >= bottom) break;
 
       if (children.isEmpty) {
-        this._paintDefaultGridItem(
+        _paintDefaultGridItem(
           canvas,
           Offset(dx, dy),
           Size(itemWidth, itemHeight),
           depth + 1,
         );
       } else {
-        this._paintWidget(
+        _paintWidget(
           canvas,
           children[index],
           Offset(dx, dy),
@@ -519,7 +518,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     Size size,
     int depth,
   ) {
-    this._paintRect(
+    _paintRect(
       canvas,
       offset,
       size,
@@ -527,7 +526,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       radius: BorderRadius.circular(18),
     );
 
-    this._paintImagePlaceholder(
+    _paintImagePlaceholder(
       canvas,
       offset,
       Size(size.width, size.height * 0.55),
@@ -537,14 +536,14 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       ),
     );
 
-    this._paintText(
+    _paintText(
       canvas,
       Offset(offset.dx + 10, offset.dy + size.height * 0.62),
       Size(size.width - 20, 18),
       depth + 2,
     );
 
-    this._paintText(
+    _paintText(
       canvas,
       Offset(offset.dx + 10, offset.dy + size.height * 0.78),
       Size(size.width * 0.55, 16),
@@ -675,7 +674,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     }
 
     if (child is Container) {
-      final height = this._containerHeight(child, parentHeight);
+      final height = _containerHeight(child, parentHeight);
 
       if (height != null) {
         return height.clamp(0.0, parentHeight);
@@ -728,7 +727,7 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     int flexibleCount = 0;
 
     for (final child in children) {
-      final knownHeight = this._knownColumnChildHeight(child, size.height);
+      final knownHeight = _knownColumnChildHeight(child, size.height);
 
       if (knownHeight != null) {
         fixedHeight += knownHeight;
@@ -750,9 +749,9 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       if (dy >= offset.dy + size.height) break;
 
       final childHeight =
-          this._knownColumnChildHeight(child, size.height) ?? fallbackHeight;
+          _knownColumnChildHeight(child, size.height) ?? fallbackHeight;
 
-      this._paintWidget(
+      _paintWidget(
         canvas,
         child,
         Offset(offset.dx, dy),

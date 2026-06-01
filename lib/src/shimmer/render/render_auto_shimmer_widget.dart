@@ -1,4 +1,4 @@
-part of auto_shimmer_render;
+part of '../render_auto_shimmer.dart';
 
 class RenderAutoShimmerWidget extends SingleChildRenderObjectWidget {
   final Widget originalWidget;

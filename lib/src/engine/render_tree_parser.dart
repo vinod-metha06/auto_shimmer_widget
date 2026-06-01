@@ -1,5 +1,4 @@
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 import 'skeleton_kind.dart';
 import 'skeleton_render_node.dart';

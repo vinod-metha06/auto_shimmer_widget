@@ -1,4 +1,4 @@
-part of auto_shimmer_render;
+part of '../render_auto_shimmer.dart';
 
 extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
   EdgeInsets _resolveEdgeInsets(EdgeInsetsGeometry? geometry) {
@@ -9,16 +9,17 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
   Widget? _extractImageLikeChild(Widget? widget) {
     if (widget == null) return null;
 
-    if (this._isImageLikeWidget(widget)) return widget;
+    if (_isImageLikeWidget(widget)) return widget;
 
-    if (widget is Center) return this._extractImageLikeChild(widget.child);
-    if (widget is Align) return this._extractImageLikeChild(widget.child);
-    if (widget is SizedBox) return this._extractImageLikeChild(widget.child);
-    if (widget is Padding) return this._extractImageLikeChild(widget.child);
-    if (widget is FittedBox) return this._extractImageLikeChild(widget.child);
-    if (widget is ClipRRect) return this._extractImageLikeChild(widget.child);
-    if (widget is DecoratedBox)
-      return this._extractImageLikeChild(widget.child);
+    if (widget is Center) return _extractImageLikeChild(widget.child);
+    if (widget is Align) return _extractImageLikeChild(widget.child);
+    if (widget is SizedBox) return _extractImageLikeChild(widget.child);
+    if (widget is Padding) return _extractImageLikeChild(widget.child);
+    if (widget is FittedBox) return _extractImageLikeChild(widget.child);
+    if (widget is ClipRRect) return _extractImageLikeChild(widget.child);
+    if (widget is DecoratedBox) {
+      return _extractImageLikeChild(widget.child);
+    }
 
     return null;
   }
@@ -83,7 +84,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     Widget child,
     Size stackSize,
   ) {
-    if (this._isButtonLikeWidget(child)) {
+    if (_isButtonLikeWidget(child)) {
       return const Size(110, 48);
     }
 
@@ -95,7 +96,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (child is Directionality) {
-      return this._estimatePositionedChildSize(
+      return _estimatePositionedChildSize(
         child.child,
         stackSize,
       );
@@ -107,7 +108,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (child is Column) {
-      final height = this._estimateColumnHeight(
+      final height = _estimateColumnHeight(
         child,
         stackSize.height,
       );
@@ -121,7 +122,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     if (child is Row) {
       return Size(
         min(stackSize.width * 0.6, 240),
-        this._estimateRowHeight(child),
+        _estimateRowHeight(child),
       );
     }
 
@@ -135,7 +136,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     Widget child,
     Size parentSize,
   ) {
-    if (this._isChipLikeWidget(child)) {
+    if (_isChipLikeWidget(child)) {
       return const Size(90, 36);
     }
 
@@ -165,7 +166,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     double rowHeight = 0;
 
     for (final child in wrap.children) {
-      final childSize = this._estimateWrapChildSize(child, parentSize);
+      final childSize = _estimateWrapChildSize(child, parentSize);
 
       if (dx + childSize.width > parentSize.width && dx > 0) {
         height += rowHeight + wrap.runSpacing;
@@ -301,7 +302,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (child is Container) {
-      return this._containerWidth(child, parentWidth) ?? fallback;
+      return _containerWidth(child, parentWidth) ?? fallback;
     }
 
     if (child is CircleAvatar) {
@@ -323,7 +324,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     Widget child,
     double parentHeight,
   ) {
-    return this._estimateWidgetHeight(child, parentHeight);
+    return _estimateWidgetHeight(child, parentHeight);
   }
 
   double? _estimateWidgetHeight(
@@ -331,7 +332,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     double parentHeight,
   ) {
     if (widget is Directionality) {
-      return this._estimateWidgetHeight(
+      return _estimateWidgetHeight(
         widget.child,
         parentHeight,
       );
@@ -341,19 +342,18 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (widget is Container) {
-      final margin = this._resolveEdgeInsets(widget.margin);
-      final height = this._containerHeight(widget, parentHeight);
+      final margin = _resolveEdgeInsets(widget.margin);
+      final height = _containerHeight(widget, parentHeight);
 
       if (height != null) {
         return height + margin.vertical;
       }
 
       if (widget.child != null) {
-        final childHeight =
-            this._estimateWidgetHeight(widget.child!, parentHeight);
+        final childHeight = _estimateWidgetHeight(widget.child!, parentHeight);
 
         if (childHeight != null) {
-          final padding = this._resolveEdgeInsets(widget.padding);
+          final padding = _resolveEdgeInsets(widget.padding);
           return childHeight + padding.vertical + margin.vertical;
         }
       }
@@ -362,10 +362,10 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (widget is Card) {
-      final margin = this._resolveEdgeInsets(widget.margin);
+      final margin = _resolveEdgeInsets(widget.margin);
 
       if (widget.child != null) {
-        final childHeight = this._estimateWidgetHeight(
+        final childHeight = _estimateWidgetHeight(
           widget.child!,
           parentHeight,
         );
@@ -386,11 +386,11 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       return 56;
     }
 
-    if (this._isChipLikeWidget(widget)) {
+    if (_isChipLikeWidget(widget)) {
       return 36;
     }
 
-    if (this._isButtonLikeWidget(widget)) {
+    if (_isButtonLikeWidget(widget)) {
       return 48;
     }
 
@@ -413,28 +413,28 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (widget is Wrap) {
-      return this._estimateWrapHeight(
+      return _estimateWrapHeight(
         widget,
         Size(size.width, parentHeight),
       );
     }
 
     if (widget is Row) {
-      return this._estimateRowHeight(widget);
+      return _estimateRowHeight(widget);
     }
 
     if (widget is Column) {
-      return this._estimateColumnHeight(widget, parentHeight);
+      return _estimateColumnHeight(widget, parentHeight);
     }
 
     if (widget is Padding) {
-      final padding = this._resolveEdgeInsets(widget.padding);
+      final padding = _resolveEdgeInsets(widget.padding);
 
       if (widget.child == null) {
         return padding.vertical;
       }
 
-      final childHeight = this._estimateWidgetHeight(
+      final childHeight = _estimateWidgetHeight(
         widget.child!,
         max(0, parentHeight - padding.vertical),
       );
@@ -445,31 +445,31 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (widget is Expanded) {
-      return this._estimateWidgetHeight(widget.child, parentHeight);
+      return _estimateWidgetHeight(widget.child, parentHeight);
     }
 
     if (widget is Flexible) {
-      return this._estimateWidgetHeight(widget.child, parentHeight);
+      return _estimateWidgetHeight(widget.child, parentHeight);
     }
 
     if (widget is Center && widget.child != null) {
-      return this._estimateWidgetHeight(widget.child!, parentHeight);
+      return _estimateWidgetHeight(widget.child!, parentHeight);
     }
 
     if (widget is Align && widget.child != null) {
-      return this._estimateWidgetHeight(widget.child!, parentHeight);
+      return _estimateWidgetHeight(widget.child!, parentHeight);
     }
 
     if (widget is Material && widget.child != null) {
-      return this._estimateWidgetHeight(widget.child!, parentHeight);
+      return _estimateWidgetHeight(widget.child!, parentHeight);
     }
 
     if (widget is InkWell && widget.child != null) {
-      return this._estimateWidgetHeight(widget.child!, parentHeight);
+      return _estimateWidgetHeight(widget.child!, parentHeight);
     }
 
     if (widget is GestureDetector && widget.child != null) {
-      return this._estimateWidgetHeight(widget.child!, parentHeight);
+      return _estimateWidgetHeight(widget.child!, parentHeight);
     }
 
     return null;
@@ -482,11 +482,11 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     double total = 0;
 
     for (final child in column.children) {
-      final childHeight = this._estimateWidgetHeight(
+      final childHeight = _estimateWidgetHeight(
             child,
             parentHeight,
           ) ??
-          this._estimateRowChildHeight(child) ??
+          _estimateRowChildHeight(child) ??
           48.0;
 
       total += childHeight;
@@ -499,7 +499,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     double maxHeight = 0;
 
     for (final child in row.children) {
-      final height = this._estimateRowChildHeight(child);
+      final height = _estimateRowChildHeight(child);
 
       if (height != null) {
         maxHeight = max(maxHeight, height);
@@ -511,7 +511,7 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
 
   double? _estimateRowChildHeight(Widget child) {
     if (child is Directionality) {
-      return this._estimateRowChildHeight(
+      return _estimateRowChildHeight(
         child.child,
       );
     }
@@ -528,21 +528,21 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (child is Container) {
-      final margin = this._resolveEdgeInsets(child.margin);
-      final height = this._containerHeight(child, double.infinity);
+      final margin = _resolveEdgeInsets(child.margin);
+      final height = _containerHeight(child, double.infinity);
 
       if (height != null) {
         return height + margin.vertical;
       }
 
       if (child.child != null) {
-        final childHeight = this._estimateWidgetHeight(
+        final childHeight = _estimateWidgetHeight(
           child.child!,
           double.infinity,
         );
 
         if (childHeight != null) {
-          final padding = this._resolveEdgeInsets(child.padding);
+          final padding = _resolveEdgeInsets(child.padding);
           return childHeight + padding.vertical + margin.vertical;
         }
       }
@@ -551,11 +551,11 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (child is Column) {
-      return this._estimateColumnHeight(child, double.infinity);
+      return _estimateColumnHeight(child, double.infinity);
     }
 
     if (child is Wrap) {
-      return this._estimateWrapHeight(child, Size(size.width, double.infinity));
+      return _estimateWrapHeight(child, Size(size.width, double.infinity));
     }
 
     if (child is RichText) {
@@ -563,22 +563,22 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       return (lines * 16) + ((lines - 1) * 6);
     }
 
-    if (this._isChipLikeWidget(child)) {
+    if (_isChipLikeWidget(child)) {
       return 36;
     }
 
-    if (this._isButtonLikeWidget(child)) {
+    if (_isButtonLikeWidget(child)) {
       return 48;
     }
 
     if (child is Padding) {
-      final padding = this._resolveEdgeInsets(child.padding);
+      final padding = _resolveEdgeInsets(child.padding);
 
       if (child.child == null) {
         return padding.vertical;
       }
 
-      final inner = this._estimateRowChildHeight(child.child!);
+      final inner = _estimateRowChildHeight(child.child!);
 
       if (inner == null) return null;
 
@@ -586,19 +586,19 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (child is Expanded) {
-      return this._estimateRowChildHeight(child.child);
+      return _estimateRowChildHeight(child.child);
     }
 
     if (child is Flexible) {
-      return this._estimateRowChildHeight(child.child);
+      return _estimateRowChildHeight(child.child);
     }
 
     if (child is Center && child.child != null) {
-      return this._estimateRowChildHeight(child.child!);
+      return _estimateRowChildHeight(child.child!);
     }
 
     if (child is Align && child.child != null) {
-      return this._estimateRowChildHeight(child.child!);
+      return _estimateRowChildHeight(child.child!);
     }
 
     return null;

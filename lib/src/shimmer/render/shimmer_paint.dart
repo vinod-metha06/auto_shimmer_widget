@@ -1,4 +1,4 @@
-part of auto_shimmer_render;
+part of '../render_auto_shimmer.dart';
 
 extension RenderAutoShimmerShimmerPaint on RenderAutoShimmer {
   Paint _buildDepthPaint(int depth) {

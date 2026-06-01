@@ -1,5 +1,3 @@
-library auto_shimmer_render;
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -87,9 +85,9 @@ class RenderAutoShimmer extends RenderProxyBox {
       Offset.zero & size,
     );
 
-    this._paintBackground(canvas);
+    _paintBackground(canvas);
 
-    this._paintWidget(
+    _paintWidget(
       canvas,
       originalWidget,
       Offset.zero,
@@ -101,7 +99,7 @@ class RenderAutoShimmer extends RenderProxyBox {
   }
 
   void _paintBackground(Canvas canvas) {
-    final paint = this._buildDepthPaint(0);
+    final paint = _buildDepthPaint(0);
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
