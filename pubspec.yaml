@@ -1,7 +1,6 @@
 name: auto_shimmer_widget
 description: Automatic Flutter shimmer skeleton loader from existing widgets with RTL, dark mode, list, grid, and animation support.
 version: 0.0.1
-publish_to: https://pub.dev
 
 homepage: https://github.com/vinod-metha06/auto_shimmer_widget
 repository: https://github.com/vinod-metha06/auto_shimmer_widget
