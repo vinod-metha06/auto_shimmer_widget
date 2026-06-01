@@ -1,0 +1,9 @@
+build/
+.dart_tool/
+.idea/
+.vscode/
+*.iml
+*.log
+*.zip
+.DS_Store
+coverage/
