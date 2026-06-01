@@ -47,7 +47,7 @@ extension RenderAutoShimmerShimmerPaint on RenderAutoShimmer {
           progress: _animationValue,
           colors: [
             base,
-            highlight.withAlpha((highlight.alpha * 0.80).round()),
+            highlight.withAlpha((highlight.a * 255.0 * 0.80).round().clamp(0, 255)),
             base,
             highlight,
             base,
@@ -142,10 +142,10 @@ extension RenderAutoShimmerShimmerPaint on RenderAutoShimmer {
     final reduce = depth * 8;
 
     return Color.fromARGB(
-      color.alpha,
-      (color.red - reduce).clamp(0, 255),
-      (color.green - reduce).clamp(0, 255),
-      (color.blue - reduce).clamp(0, 255),
+      (color.a * 255.0).round().clamp(0, 255),
+      (color.r * 255.0 - reduce).round().clamp(0, 255),
+      (color.g * 255.0 - reduce).round().clamp(0, 255),
+      (color.b * 255.0 - reduce).round().clamp(0, 255),
     );
   }
 
