@@ -22,7 +22,8 @@ void main() {
     expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsNothing);
   });
 
-  testWidgets('wraps child in shimmer widget when isLoading is true', (tester) async {
+  testWidgets('wraps child in shimmer widget when isLoading is true',
+      (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: AutoShimmer(

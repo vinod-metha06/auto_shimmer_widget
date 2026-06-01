@@ -313,7 +313,6 @@ extension RenderAutoShimmerShimmerPaint on RenderAutoShimmer {
         );
     }
   }
-
 }
 
 class _SlidingTransform extends GradientTransform {

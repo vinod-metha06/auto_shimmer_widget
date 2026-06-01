@@ -118,36 +118,36 @@ extension RenderAutoShimmerBasicPainters on RenderAutoShimmer {
     canvas.drawRect(rect, paint);
   }
 
- void _paintText(
-  Canvas canvas,
-  Offset offset,
-  Size size,
-  int depth,
-) {
-  final paint = _buildDepthPaint(depth);
+  void _paintText(
+    Canvas canvas,
+    Offset offset,
+    Size size,
+    int depth,
+  ) {
+    final paint = _buildDepthPaint(depth);
 
-  final height = size.height.clamp(12.0, 18.0);
-  final width = size.width * 0.7;
+    final height = size.height.clamp(12.0, 18.0);
+    final width = size.width * 0.7;
 
-  final dx = textDirection == TextDirection.rtl
-      ? offset.dx + size.width - width
-      : offset.dx;
+    final dx = textDirection == TextDirection.rtl
+        ? offset.dx + size.width - width
+        : offset.dx;
 
-  final rect = Rect.fromLTWH(
-    dx,
-    offset.dy + (size.height - height) / 2,
-    width,
-    height,
-  );
+    final rect = Rect.fromLTWH(
+      dx,
+      offset.dy + (size.height - height) / 2,
+      width,
+      height,
+    );
 
-  canvas.drawRRect(
-    RRect.fromRectAndRadius(
-      rect,
-      const Radius.circular(4),
-    ),
-    paint,
-  );
-}
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        rect,
+        const Radius.circular(4),
+      ),
+      paint,
+    );
+  }
 
   void _paintIcon(
     Canvas canvas,

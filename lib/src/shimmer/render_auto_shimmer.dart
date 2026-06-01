@@ -17,7 +17,6 @@ part 'render/size_resolver.dart';
 part 'render/shimmer_paint.dart';
 
 class RenderAutoShimmer extends RenderProxyBox {
-
   Widget originalWidget;
 
   int shimmerItemCount;

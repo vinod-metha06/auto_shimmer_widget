@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:auto_shimmer_widget/auto_shimmer_widget.dart';
 
 void main() {
-   runApp(const AutoShimmerDarkModeTestApp());
- }
+  runApp(const AutoShimmerDarkModeTestApp());
+}
 
 class AutoShimmerDarkModeTestApp extends StatefulWidget {
   const AutoShimmerDarkModeTestApp({super.key});

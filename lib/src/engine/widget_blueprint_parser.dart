@@ -113,43 +113,39 @@ class WidgetBlueprintParser {
       return;
     }
 
- if (widget is Container) {
-  final constraints = widget.constraints;
+    if (widget is Container) {
+      final constraints = widget.constraints;
 
-  final hasDecoration =
-      widget.decoration != null ||
-      widget.color != null;
+      final hasDecoration = widget.decoration != null || widget.color != null;
 
-  final hasFixedSize = constraints != null &&
-      (
-        constraints.hasBoundedWidth ||
-        constraints.hasBoundedHeight ||
-        constraints.minWidth > 0 ||
-        constraints.minHeight > 0
-      );
+      final hasFixedSize = constraints != null &&
+          (constraints.hasBoundedWidth ||
+              constraints.hasBoundedHeight ||
+              constraints.minWidth > 0 ||
+              constraints.minHeight > 0);
 
-  /// Paint button/card-like containers.
-  if (hasDecoration || hasFixedSize) {
-    result.add(
-      SkeletonBlueprint(
-        kind: SkeletonKind.rect,
-        depth: depth,
-        id: '$path/container',
-      ),
-    );
-  }
+      /// Paint button/card-like containers.
+      if (hasDecoration || hasFixedSize) {
+        result.add(
+          SkeletonBlueprint(
+            kind: SkeletonKind.rect,
+            depth: depth,
+            id: '$path/container',
+          ),
+        );
+      }
 
-  if (widget.child != null) {
-    _walk(
-      widget.child!,
-      result,
-      depth + 1,
-      '$path/container/child',
-    );
-  }
+      if (widget.child != null) {
+        _walk(
+          widget.child!,
+          result,
+          depth + 1,
+          '$path/container/child',
+        );
+      }
 
-  return;
-}
+      return;
+    }
 
     if (widget is Padding && widget.child != null) {
       _walk(

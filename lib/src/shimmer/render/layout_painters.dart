@@ -363,7 +363,8 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
   ) {
     final children = this._extractSliverChildren(listView.childrenDelegate);
 
-    final fallbackCount = this._resolveBuilderItemCount(listView.childrenDelegate);
+    final fallbackCount =
+        this._resolveBuilderItemCount(listView.childrenDelegate);
 
     if (children.isEmpty) {
       this._paintRepeatedListItems(
@@ -473,9 +474,8 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       childAspectRatio = delegate.childAspectRatio;
     }
 
-    final itemWidth =
-        (size.width - ((crossAxisCount - 1) * crossAxisSpacing)) /
-            crossAxisCount;
+    final itemWidth = (size.width - ((crossAxisCount - 1) * crossAxisSpacing)) /
+        crossAxisCount;
 
     final itemHeight = itemWidth / childAspectRatio;
 
@@ -552,45 +552,80 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     );
   }
 
-void _paintRow(
-  Canvas canvas,
-  Row row,
-  Offset offset,
-  Size size,
-  int depth,
-) {
-  final children = row.children;
+  void _paintRow(
+    Canvas canvas,
+    Row row,
+    Offset offset,
+    Size size,
+    int depth,
+  ) {
+    final children = row.children;
 
-  if (children.isEmpty) return;
+    if (children.isEmpty) return;
 
-  double fixedWidth = 0;
-  int flexCount = 0;
+    double fixedWidth = 0;
+    int flexCount = 0;
 
-  for (final child in children) {
-    if (child is SizedBox && child.width != null) {
-      fixedWidth += child.width!;
-    } else if (child is Container) {
-      fixedWidth += _containerWidth(child, size.width) ?? 0;
-    } else if (child is CircleAvatar) {
-      fixedWidth += (child.radius ?? 20) * 2;
-    } else if (child is Icon) {
-      fixedWidth += child.size ?? 24;
-    } else if (child is Expanded || child is Flexible) {
-      flexCount++;
+    for (final child in children) {
+      if (child is SizedBox && child.width != null) {
+        fixedWidth += child.width!;
+      } else if (child is Container) {
+        fixedWidth += _containerWidth(child, size.width) ?? 0;
+      } else if (child is CircleAvatar) {
+        fixedWidth += (child.radius ?? 20) * 2;
+      } else if (child is Icon) {
+        fixedWidth += child.size ?? 24;
+      } else if (child is Expanded || child is Flexible) {
+        flexCount++;
+      }
     }
-  }
 
-  final remainingWidth = max(
-    0.0,
-    size.width - fixedWidth,
-  );
+    final remainingWidth = max(
+      0.0,
+      size.width - fixedWidth,
+    );
 
-  final defaultChildWidth = flexCount > 0
-      ? remainingWidth / flexCount
-      : size.width / children.length;
+    final defaultChildWidth = flexCount > 0
+        ? remainingWidth / flexCount
+        : size.width / children.length;
 
-  if (textDirection == TextDirection.rtl) {
-    double dx = offset.dx + size.width;
+    if (textDirection == TextDirection.rtl) {
+      double dx = offset.dx + size.width;
+
+      for (final child in children) {
+        final childWidth = _resolveChildWidthInRow(
+          child,
+          size.width,
+          defaultChildWidth,
+        );
+
+        dx -= childWidth;
+
+        final childHeight = _resolveChildHeightInRow(
+          child,
+          size.height,
+        );
+
+        final childDy = _resolveRowChildDy(
+          row,
+          offset.dy,
+          size.height,
+          childHeight,
+        );
+
+        _paintWidget(
+          canvas,
+          child,
+          Offset(dx, childDy),
+          Size(childWidth, childHeight),
+          depth: depth + 1,
+        );
+      }
+
+      return;
+    }
+
+    double dx = offset.dx;
 
     for (final child in children) {
       final childWidth = _resolveChildWidthInRow(
@@ -598,8 +633,6 @@ void _paintRow(
         size.width,
         defaultChildWidth,
       );
-
-      dx -= childWidth;
 
       final childHeight = _resolveChildHeightInRow(
         child,
@@ -620,43 +653,10 @@ void _paintRow(
         Size(childWidth, childHeight),
         depth: depth + 1,
       );
+
+      dx += childWidth;
     }
-
-    return;
   }
-
-  double dx = offset.dx;
-
-  for (final child in children) {
-    final childWidth = _resolveChildWidthInRow(
-      child,
-      size.width,
-      defaultChildWidth,
-    );
-
-    final childHeight = _resolveChildHeightInRow(
-      child,
-      size.height,
-    );
-
-    final childDy = _resolveRowChildDy(
-      row,
-      offset.dy,
-      size.height,
-      childHeight,
-    );
-
-    _paintWidget(
-      canvas,
-      child,
-      Offset(dx, childDy),
-      Size(childWidth, childHeight),
-      depth: depth + 1,
-    );
-
-    dx += childWidth;
-  }
-}
 
   double _resolveChildHeightInRow(
     Widget child,
@@ -764,36 +764,99 @@ void _paintRow(
     }
   }
 
-void _paintListTile(
-  Canvas canvas,
-  ListTile tile,
-  Offset offset,
-  Size size,
-  int depth,
-) {
-  const horizontalPadding = 16.0;
-  const gap = 16.0;
+  void _paintListTile(
+    Canvas canvas,
+    ListTile tile,
+    Offset offset,
+    Size size,
+    int depth,
+  ) {
+    const horizontalPadding = 16.0;
+    const gap = 16.0;
 
-  double leadingSize = 40.0;
+    double leadingSize = 40.0;
 
-  if (tile.leading is CircleAvatar) {
-    final avatar = tile.leading as CircleAvatar;
-    leadingSize = (avatar.radius ?? 20) * 2;
-  }
+    if (tile.leading is CircleAvatar) {
+      final avatar = tile.leading as CircleAvatar;
+      leadingSize = (avatar.radius ?? 20) * 2;
+    }
 
-  leadingSize = leadingSize.clamp(36.0, 56.0);
+    leadingSize = leadingSize.clamp(36.0, 56.0);
 
-  final centerY = offset.dy + size.height / 2;
+    final centerY = offset.dy + size.height / 2;
 
-  if (textDirection == TextDirection.rtl) {
-    final leadingX = offset.dx + size.width - horizontalPadding - leadingSize;
+    if (textDirection == TextDirection.rtl) {
+      final leadingX = offset.dx + size.width - horizontalPadding - leadingSize;
+
+      if (tile.leading != null) {
+        _paintWidget(
+          canvas,
+          tile.leading!,
+          Offset(
+            leadingX,
+            offset.dy + (size.height - leadingSize) / 2,
+          ),
+          Size(leadingSize, leadingSize),
+          depth: depth + 1,
+        );
+      }
+
+      if (tile.trailing != null) {
+        _paintWidget(
+          canvas,
+          tile.trailing!,
+          Offset(
+            offset.dx + horizontalPadding,
+            offset.dy + (size.height - 24) / 2,
+          ),
+          const Size(24, 24),
+          depth: depth + 1,
+        );
+      }
+
+      final contentRight = leadingX - gap;
+      final contentLeft = offset.dx + horizontalPadding + 32;
+
+      final contentWidth = max(
+        0.0,
+        contentRight - contentLeft,
+      );
+
+      if (tile.title != null) {
+        _paintWidget(
+          canvas,
+          tile.title!,
+          Offset(
+            contentLeft,
+            centerY - 22,
+          ),
+          Size(contentWidth, 22),
+          depth: depth + 1,
+        );
+      }
+
+      if (tile.subtitle != null) {
+        _paintWidget(
+          canvas,
+          tile.subtitle!,
+          Offset(
+            contentLeft,
+            centerY + 4,
+          ),
+          Size(contentWidth, 20),
+          depth: depth + 1,
+        );
+      }
+
+      return;
+    }
 
     if (tile.leading != null) {
       _paintWidget(
         canvas,
         tile.leading!,
         Offset(
-          leadingX,
+          offset.dx + horizontalPadding,
           offset.dy + (size.height - leadingSize) / 2,
         ),
         Size(leadingSize, leadingSize),
@@ -801,25 +864,11 @@ void _paintListTile(
       );
     }
 
-    if (tile.trailing != null) {
-      _paintWidget(
-        canvas,
-        tile.trailing!,
-        Offset(
-          offset.dx + horizontalPadding,
-          offset.dy + (size.height - 24) / 2,
-        ),
-        const Size(24, 24),
-        depth: depth + 1,
-      );
-    }
-
-    final contentRight = leadingX - gap;
-    final contentLeft = offset.dx + horizontalPadding + 32;
+    final contentX = offset.dx + horizontalPadding + leadingSize + gap;
 
     final contentWidth = max(
       0.0,
-      contentRight - contentLeft,
+      size.width - contentX - horizontalPadding,
     );
 
     if (tile.title != null) {
@@ -827,7 +876,7 @@ void _paintListTile(
         canvas,
         tile.title!,
         Offset(
-          contentLeft,
+          contentX,
           centerY - 22,
         ),
         Size(contentWidth, 22),
@@ -840,7 +889,7 @@ void _paintListTile(
         canvas,
         tile.subtitle!,
         Offset(
-          contentLeft,
+          contentX,
           centerY + 4,
         ),
         Size(contentWidth, 20),
@@ -848,66 +897,17 @@ void _paintListTile(
       );
     }
 
-    return;
+    if (tile.trailing != null) {
+      _paintWidget(
+        canvas,
+        tile.trailing!,
+        Offset(
+          offset.dx + size.width - 40,
+          offset.dy + (size.height - 24) / 2,
+        ),
+        const Size(24, 24),
+        depth: depth + 1,
+      );
+    }
   }
-
-  if (tile.leading != null) {
-    _paintWidget(
-      canvas,
-      tile.leading!,
-      Offset(
-        offset.dx + horizontalPadding,
-        offset.dy + (size.height - leadingSize) / 2,
-      ),
-      Size(leadingSize, leadingSize),
-      depth: depth + 1,
-    );
-  }
-
-  final contentX = offset.dx + horizontalPadding + leadingSize + gap;
-
-  final contentWidth = max(
-    0.0,
-    size.width - contentX - horizontalPadding,
-  );
-
-  if (tile.title != null) {
-    _paintWidget(
-      canvas,
-      tile.title!,
-      Offset(
-        contentX,
-        centerY - 22,
-      ),
-      Size(contentWidth, 22),
-      depth: depth + 1,
-    );
-  }
-
-  if (tile.subtitle != null) {
-    _paintWidget(
-      canvas,
-      tile.subtitle!,
-      Offset(
-        contentX,
-        centerY + 4,
-      ),
-      Size(contentWidth, 20),
-      depth: depth + 1,
-    );
-  }
-
-  if (tile.trailing != null) {
-    _paintWidget(
-      canvas,
-      tile.trailing!,
-      Offset(
-        offset.dx + size.width - 40,
-        offset.dy + (size.height - 24) / 2,
-      ),
-      const Size(24, 24),
-      depth: depth + 1,
-    );
-  }
-}
 }
