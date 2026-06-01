@@ -3,6 +3,7 @@ description: Automatic Flutter shimmer skeleton loader from existing widgets wit
 version: 0.0.1
 publish_to: https://pub.dev
 homepage: https://github.com/vinod-metha06/auto_shimmer_widget
+repository: https://github.com/vinod-metha06/auto_shimmer_widget
 topics:
   - shimmer
   - skeleton
@@ -22,7 +23,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0 
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
