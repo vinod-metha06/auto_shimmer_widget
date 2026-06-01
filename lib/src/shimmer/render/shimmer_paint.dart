@@ -47,7 +47,8 @@ extension RenderAutoShimmerShimmerPaint on RenderAutoShimmer {
           progress: _animationValue,
           colors: [
             base,
-            highlight.withAlpha((highlight.a * 255.0 * 0.80).round().clamp(0, 255)),
+            highlight
+                .withAlpha((highlight.a * 255.0 * 0.80).round().clamp(0, 255)),
             base,
             highlight,
             base,
