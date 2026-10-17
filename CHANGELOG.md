@@ -1,3 +1,16 @@
+## 1.2.0
+
+- Added skeleton support for Slivers, Tables & Complex Views:
+  - `CustomScrollView`: Multi-sliver hierarchy layout rendering slivers sequentially along the scroll axis.
+  - `SliverList` & `SliverGrid`: Sliver equivalents of ListView and GridView supporting both `SliverChildListDelegate` and `SliverChildBuilderDelegate`.
+  - `SliverToBoxAdapter` & `SliverPadding`: Sliver wrapper delegation preserving padding insets.
+  - `SliverFillRemaining`: Full remaining viewport content skeleton rendering.
+  - `Table` & `TableRow`: Multi-column cell grid skeletons with cell size estimation and border dividers.
+- Full RTL directionality support for Table columns.
+- Updated `WidgetBlueprintParser` with blueprint parsing for slivers, adapters, and table cell hierarchies.
+- Updated height resolution in `size_resolver` for all slivers and tables.
+- Added comprehensive unit and widget tests for `v1.2.0`.
+
 ## 1.1.0
 
 - Added skeleton support for Navigation, App Bars & Expansion widgets:

@@ -921,5 +921,196 @@ void main() {
       expect(placeholderBlueprints.first.kind, SkeletonKind.rect);
     });
   });
+
+  group('v1.2.0 Slivers, Tables & Complex Views tests', () {
+    testWidgets('renders shimmer with CustomScrollView and multi-sliver hierarchy',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: CustomScrollView(
+                slivers: [
+                  const SliverAppBar(
+                    title: Text('Sliver Header'),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Text('Featured Section'),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate(
+                        const [
+                          ListTile(
+                            leading: CircleAvatar(),
+                            title: Text('Item 1'),
+                          ),
+                          ListTile(
+                            leading: CircleAvatar(),
+                            title: Text('Item 2'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    delegate: SliverChildListDelegate(
+                      const [
+                        Card(child: Center(child: Text('Grid 1'))),
+                        Card(child: Center(child: Text('Grid 2'))),
+                      ],
+                    ),
+                  ),
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(child: Text('Footer')),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with SliverList and SliverGrid builder delegates',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              shimmerItemCount: 4,
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => ListTile(title: Text('Item $index')),
+                      childCount: 4,
+                    ),
+                  ),
+                  SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) => Card(child: Text('Card $index')),
+                      childCount: 4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with Table and TableRow (LTR and RTL)',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Column(
+                children: [
+                  Table(
+                    border: TableBorder.all(),
+                    children: const [
+                      TableRow(
+                        children: [
+                          Text('Header 1'),
+                          Text('Header 2'),
+                          Text('Header 3'),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          Text('Cell 1'),
+                          Text('Cell 2'),
+                          Text('Cell 3'),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Table(
+                      children: const [
+                        TableRow(
+                          children: [
+                            Text('RTL 1'),
+                            Text('RTL 2'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    test('WidgetBlueprintParser parses Slivers and Table correctly', () {
+      final customScrollViewBlueprints = WidgetBlueprintParser.parse(
+        CustomScrollView(
+          slivers: [
+            const SliverToBoxAdapter(child: Text('Banner')),
+            SliverPadding(
+              padding: EdgeInsets.zero,
+              sliver: SliverList(
+                delegate: SliverChildListDelegate(
+                  const [
+                    Text('Row 1'),
+                    Text('Row 2'),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      expect(
+        customScrollViewBlueprints.any((b) => b.kind == SkeletonKind.text),
+        isTrue,
+      );
+
+      final tableBlueprints = WidgetBlueprintParser.parse(
+        Table(
+          children: const [
+            TableRow(
+              children: [
+                Icon(Icons.star),
+                Text('Col 2'),
+              ],
+            ),
+          ],
+        ),
+      );
+      expect(tableBlueprints.any((b) => b.kind == SkeletonKind.icon), isTrue);
+      expect(tableBlueprints.any((b) => b.kind == SkeletonKind.text), isTrue);
+    });
+  });
 }
 

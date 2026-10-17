@@ -829,6 +829,39 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
           : widget.fallbackHeight;
     }
 
+    if (widget is CustomScrollView) {
+      return parentHeight.isFinite ? parentHeight : 500.0;
+    }
+
+    if (widget is SliverToBoxAdapter && widget.child != null) {
+      return _estimateWidgetHeight(widget.child!, parentHeight);
+    }
+
+    if (widget is SliverPadding && widget.child != null) {
+      final insets = _resolveEdgeInsets(widget.padding);
+      final inner = _estimateWidgetHeight(
+        widget.child!,
+        max(0, parentHeight - insets.vertical),
+      );
+      return inner != null ? inner + insets.vertical : null;
+    }
+
+    if (widget is SliverFillRemaining && widget.child != null) {
+      return _estimateWidgetHeight(widget.child!, parentHeight);
+    }
+
+    if (widget is SliverList) {
+      return _estimateSliverListHeight(widget, parentHeight);
+    }
+
+    if (widget is SliverGrid) {
+      return _estimateSliverGridHeight(widget, parentHeight);
+    }
+
+    if (widget is Table) {
+      return _estimateTableHeight(widget, parentHeight);
+    }
+
     if (_isChipLikeWidget(widget)) {
       return 36;
     }
@@ -1218,5 +1251,52 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       return (child.width == 0.0 || child.height == 0.0) && child.child == null;
     }
     return false;
+  }
+
+  double? _estimateTableHeight(Table table, double parentHeight) {
+    if (table.children.isEmpty) return null;
+    double total = 0.0;
+    for (final row in table.children) {
+      double rowHeight = 36.0;
+      for (final cell in row.children) {
+        final h = _estimateWidgetHeight(cell, parentHeight);
+        if (h != null && h > rowHeight) {
+          rowHeight = h;
+        }
+      }
+      total += rowHeight;
+    }
+    return total;
+  }
+
+  double? _estimateSliverListHeight(SliverList list, double parentHeight) {
+    final children = _extractSliverChildren(list.delegate);
+    if (children.isEmpty) {
+      final count = _resolveBuilderItemCount(list.delegate);
+      return count * 102.0;
+    }
+    double total = 0.0;
+    for (final child in children) {
+      total += _estimateWidgetHeight(child, parentHeight) ?? 72.0;
+    }
+    return total;
+  }
+
+  double? _estimateSliverGridHeight(SliverGrid grid, double parentHeight) {
+    final children = _extractSliverChildren(grid.delegate);
+    final count = children.isEmpty
+        ? _resolveBuilderItemCount(grid.delegate)
+        : children.length;
+    int crossAxisCount = gridCrossAxisCount;
+    double childAspectRatio = 1.0;
+    final delegate = grid.gridDelegate;
+    if (delegate is SliverGridDelegateWithFixedCrossAxisCount) {
+      crossAxisCount = delegate.crossAxisCount;
+      childAspectRatio = delegate.childAspectRatio;
+    }
+    final rows = (count / crossAxisCount).ceil();
+    final itemWidth = size.width / crossAxisCount;
+    final itemHeight = itemWidth / childAspectRatio;
+    return rows * (itemHeight + 12.0);
   }
 }

@@ -660,6 +660,41 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
       return;
     }
 
+    if (widget is CustomScrollView) {
+      _paintCustomScrollView(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is SliverList) {
+      _paintSliverList(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is SliverGrid) {
+      _paintSliverGrid(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is SliverToBoxAdapter) {
+      _paintSliverToBoxAdapter(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is SliverPadding) {
+      _paintSliverPadding(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is SliverFillRemaining) {
+      _paintSliverFillRemaining(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is Table) {
+      _paintTable(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
     _paintRect(canvas, offset, availableSize, depth);
   }
 }

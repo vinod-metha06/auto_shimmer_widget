@@ -458,6 +458,109 @@ class WidgetBlueprintParser {
       return;
     }
 
+    if (widget is CustomScrollView) {
+      for (int i = 0; i < widget.slivers.length; i++) {
+        _walk(
+          widget.slivers[i],
+          result,
+          depth + 1,
+          '$path/customScrollView/$i',
+        );
+      }
+      return;
+    }
+
+    if (widget is SliverToBoxAdapter && widget.child != null) {
+      _walk(
+        widget.child!,
+        result,
+        depth + 1,
+        '$path/sliverToBoxAdapter',
+      );
+      return;
+    }
+
+    if (widget is SliverPadding && widget.child != null) {
+      _walk(
+        widget.child!,
+        result,
+        depth + 1,
+        '$path/sliverPadding',
+      );
+      return;
+    }
+
+    if (widget is SliverFillRemaining && widget.child != null) {
+      _walk(
+        widget.child!,
+        result,
+        depth + 1,
+        '$path/sliverFillRemaining',
+      );
+      return;
+    }
+
+    if (widget is SliverList) {
+      final delegate = widget.delegate;
+      if (delegate is SliverChildListDelegate) {
+        for (int i = 0; i < delegate.children.length; i++) {
+          _walk(
+            delegate.children[i],
+            result,
+            depth + 1,
+            '$path/sliverList/$i',
+          );
+        }
+      } else {
+        result.add(
+          SkeletonBlueprint(
+            kind: SkeletonKind.rect,
+            depth: depth,
+            id: '$path/sliverList',
+          ),
+        );
+      }
+      return;
+    }
+
+    if (widget is SliverGrid) {
+      final delegate = widget.delegate;
+      if (delegate is SliverChildListDelegate) {
+        for (int i = 0; i < delegate.children.length; i++) {
+          _walk(
+            delegate.children[i],
+            result,
+            depth + 1,
+            '$path/sliverGrid/$i',
+          );
+        }
+      } else {
+        result.add(
+          SkeletonBlueprint(
+            kind: SkeletonKind.rect,
+            depth: depth,
+            id: '$path/sliverGrid',
+          ),
+        );
+      }
+      return;
+    }
+
+    if (widget is Table) {
+      for (int r = 0; r < widget.children.length; r++) {
+        final row = widget.children[r];
+        for (int c = 0; c < row.children.length; c++) {
+          _walk(
+            row.children[c],
+            result,
+            depth + 1,
+            '$path/table/$r/$c',
+          );
+        }
+      }
+      return;
+    }
+
     if (widget is ListTile) {
       if (widget.leading != null) {
         _walk(
