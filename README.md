@@ -74,7 +74,7 @@ The package automatically reads your widget structure and paints a matching shim
 
 - Automatic shimmer skeleton generation from existing widgets
 - `ListView`, `ListView.builder`, `GridView`, and `GridView.builder` support
-- `Container`, `Row`, `Column`, `Stack`, `Positioned`, `ListTile`, `Card`, `Wrap`, `Chip`
+- `Container`, `Row`, `Column`, `Stack`, `Positioned`, `ListTile`, `Card`, `Wrap`, `Chip`, `Visibility`
 - `Image`, `Icon`, `CircleAvatar`, `Text`, `RichText`, `TextField`
 - Buttons: `ElevatedButton`, `OutlinedButton`, `TextButton`, `IconButton`, `FloatingActionButton`
 - Dark mode support
@@ -91,7 +91,7 @@ Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  auto_shimmer_widget: ^0.0.1
+  auto_shimmer_widget: ^0.0.3
 ```
 
 Then run:
@@ -691,7 +691,7 @@ AutoShimmer({
 
 | Category | Widgets |
 |---|---|
-| Layout | `Container`, `Padding`, `SizedBox`, `Center`, `Align`, `Row`, `Column`, `Stack`, `Positioned`, `Wrap` |
+| Layout | `Container`, `Padding`, `SizedBox`, `Center`, `Align`, `Row`, `Column`, `Stack`, `Positioned`, `Wrap`, `Visibility` |
 | Scroll | `SingleChildScrollView`, `ListView`, `ListView.builder`, `GridView`, `GridView.builder` |
 | Material | `Card`, `Material`, `InkWell`, `GestureDetector`, `ListTile` |
 | Content | `Text`, `RichText`, `Icon`, `Image`, `CircleAvatar` |

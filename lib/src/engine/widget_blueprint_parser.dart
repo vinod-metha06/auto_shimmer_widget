@@ -16,6 +16,25 @@ class WidgetBlueprintParser {
     int depth,
     String path,
   ) {
+    if (widget is Visibility) {
+      if (widget.visible) {
+        _walk(
+          widget.child,
+          result,
+          depth + 1,
+          '$path/visibility/child',
+        );
+      } else if (!widget.maintainSize) {
+        _walk(
+          widget.replacement,
+          result,
+          depth + 1,
+          '$path/visibility/replacement',
+        );
+      }
+      return;
+    }
+
     if (widget is Text) {
       result.add(
         SkeletonBlueprint(

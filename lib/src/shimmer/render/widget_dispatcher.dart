@@ -33,6 +33,27 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
       return;
     }
 
+    if (widget is Visibility) {
+      if (widget.visible) {
+        _paintWidget(
+          canvas,
+          widget.child,
+          offset,
+          availableSize,
+          depth: depth + 1,
+        );
+      } else if (!widget.maintainSize) {
+        _paintWidget(
+          canvas,
+          widget.replacement,
+          offset,
+          availableSize,
+          depth: depth + 1,
+        );
+      }
+      return;
+    }
+
     if (widget is Text) {
       _paintText(canvas, offset, availableSize, depth);
       return;

@@ -156,6 +156,10 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
 
       final childSize = _estimateWrapChildSize(child, size);
 
+      if (childSize.width <= 0 && childSize.height <= 0) {
+        continue;
+      }
+
       if (dx + childSize.width > maxX) {
         dx = offset.dx;
         dy += childSize.height + wrap.runSpacing;
@@ -384,6 +388,10 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
 
       final itemHeight = _estimateWidgetHeight(child, size.height) ?? 90.0;
 
+      if (itemHeight <= 0) {
+        continue;
+      }
+
       _paintWidget(
         canvas,
         child,
@@ -564,8 +572,13 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
 
     double fixedWidth = 0;
     int flexCount = 0;
+    int activeChildCount = 0;
 
-    for (final child in children) {
+    for (final rawChild in children) {
+      if (!_isZeroSizeChild(rawChild)) {
+        activeChildCount++;
+      }
+      final child = _resolveVisibility(rawChild);
       if (child is SizedBox && child.width != null) {
         fixedWidth += child.width!;
       } else if (child is Container) {
@@ -584,9 +597,10 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       size.width - fixedWidth,
     );
 
+    final divisor = activeChildCount > 0 ? activeChildCount : children.length;
     final defaultChildWidth = flexCount > 0
         ? remainingWidth / flexCount
-        : size.width / children.length;
+        : size.width / divisor;
 
     if (textDirection == TextDirection.rtl) {
       double dx = offset.dx + size.width;
@@ -661,6 +675,14 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     Widget child,
     double parentHeight,
   ) {
+    if (child is Visibility) {
+      if (child.visible || child.maintainSize) {
+        return _resolveChildHeightInRow(child.child, parentHeight);
+      } else {
+        return _resolveChildHeightInRow(child.replacement, parentHeight);
+      }
+    }
+
     if (child is CircleAvatar) {
       return ((child.radius ?? 20) * 2).clamp(32.0, parentHeight);
     }
@@ -775,14 +797,19 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
 
     double leadingSize = 40.0;
 
-    if (tile.leading is CircleAvatar) {
-      final avatar = tile.leading as CircleAvatar;
-      leadingSize = (avatar.radius ?? 20) * 2;
+    final effectiveLeading =
+        tile.leading != null ? _resolveVisibility(tile.leading!) : null;
+
+    if (effectiveLeading is CircleAvatar) {
+      leadingSize = (effectiveLeading.radius ?? 20) * 2;
     }
 
     leadingSize = leadingSize.clamp(36.0, 56.0);
 
     final centerY = offset.dy + size.height / 2;
+
+    final hasLeading = tile.leading != null && !_isZeroSizeChild(tile.leading!);
+    final leadingOffset = hasLeading ? leadingSize + gap : 0.0;
 
     if (textDirection == TextDirection.rtl) {
       final leadingX = offset.dx + size.width - horizontalPadding - leadingSize;
@@ -813,8 +840,12 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
         );
       }
 
-      final contentRight = leadingX - gap;
-      final contentLeft = offset.dx + horizontalPadding + 32;
+      final contentRight =
+          hasLeading ? leadingX - gap : offset.dx + size.width - horizontalPadding;
+      final contentLeft =
+          tile.trailing != null && !_isZeroSizeChild(tile.trailing!)
+              ? offset.dx + horizontalPadding + 32
+              : offset.dx + horizontalPadding;
 
       final contentWidth = max(
         0.0,
@@ -863,11 +894,15 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
       );
     }
 
-    final contentX = offset.dx + horizontalPadding + leadingSize + gap;
+    final contentX = offset.dx + horizontalPadding + leadingOffset;
+
+    final hasTrailing =
+        tile.trailing != null && !_isZeroSizeChild(tile.trailing!);
+    final trailingSpace = hasTrailing ? 40.0 : 0.0;
 
     final contentWidth = max(
       0.0,
-      size.width - contentX - horizontalPadding,
+      size.width - contentX - horizontalPadding - trailingSpace,
     );
 
     if (tile.title != null) {

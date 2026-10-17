@@ -11,6 +11,15 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
 
     if (_isImageLikeWidget(widget)) return widget;
 
+    if (widget is Visibility) {
+      if (widget.visible) {
+        return _extractImageLikeChild(widget.child);
+      } else if (!widget.maintainSize) {
+        return _extractImageLikeChild(widget.replacement);
+      }
+      return null;
+    }
+
     if (widget is Center) return _extractImageLikeChild(widget.child);
     if (widget is Align) return _extractImageLikeChild(widget.child);
     if (widget is SizedBox) return _extractImageLikeChild(widget.child);
@@ -84,6 +93,36 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     Widget child,
     Size stackSize,
   ) {
+    if (child is Visibility) {
+      if (child.visible || child.maintainSize) {
+        return _estimatePositionedChildSize(
+          child.child,
+          stackSize,
+        );
+      } else {
+        return _estimatePositionedChildSize(
+          child.replacement,
+          stackSize,
+        );
+      }
+    }
+
+    if (child is SizedBox) {
+      if (child.width == 0 && child.height == 0) {
+        return Size.zero;
+      }
+      return Size(
+        child.width ??
+            (child.child != null
+                ? _estimatePositionedChildSize(child.child!, stackSize).width
+                : stackSize.width * 0.4),
+        child.height ??
+            (child.child != null
+                ? _estimatePositionedChildSize(child.child!, stackSize).height
+                : 40),
+      );
+    }
+
     if (_isButtonLikeWidget(child)) {
       return const Size(110, 48);
     }
@@ -136,11 +175,22 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     Widget child,
     Size parentSize,
   ) {
+    if (child is Visibility) {
+      if (child.visible || child.maintainSize) {
+        return _estimateWrapChildSize(child.child, parentSize);
+      } else {
+        return _estimateWrapChildSize(child.replacement, parentSize);
+      }
+    }
+
     if (_isChipLikeWidget(child)) {
       return const Size(90, 36);
     }
 
     if (child is SizedBox) {
+      if (child.width == 0 && child.height == 0) {
+        return Size.zero;
+      }
       return Size(
         child.width ?? 80,
         child.height ?? 36,
@@ -167,6 +217,10 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
 
     for (final child in wrap.children) {
       final childSize = _estimateWrapChildSize(child, parentSize);
+
+      if (childSize.width <= 0 && childSize.height <= 0) {
+        continue;
+      }
 
       if (dx + childSize.width > parentSize.width && dx > 0) {
         height += rowHeight + wrap.runSpacing;
@@ -297,6 +351,14 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     double parentWidth,
     double fallback,
   ) {
+    if (child is Visibility) {
+      if (child.visible || child.maintainSize) {
+        return _resolveChildWidthInRow(child.child, parentWidth, fallback);
+      } else {
+        return _resolveChildWidthInRow(child.replacement, parentWidth, 0.0);
+      }
+    }
+
     if (child is SizedBox && child.width != null) {
       return child.width!;
     }
@@ -331,6 +393,20 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     Widget widget,
     double parentHeight,
   ) {
+    if (widget is Visibility) {
+      if (widget.visible || widget.maintainSize) {
+        return _estimateWidgetHeight(
+          widget.child,
+          parentHeight,
+        );
+      } else {
+        return _estimateWidgetHeight(
+          widget.replacement,
+          parentHeight,
+        );
+      }
+    }
+
     if (widget is Directionality) {
       return _estimateWidgetHeight(
         widget.child,
@@ -510,6 +586,14 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
   }
 
   double? _estimateRowChildHeight(Widget child) {
+    if (child is Visibility) {
+      if (child.visible || child.maintainSize) {
+        return _estimateRowChildHeight(child.child);
+      } else {
+        return _estimateRowChildHeight(child.replacement);
+      }
+    }
+
     if (child is Directionality) {
       return _estimateRowChildHeight(
         child.child,
@@ -616,5 +700,30 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     return BorderRadius.circular(12);
+  }
+
+  Widget _resolveVisibility(Widget widget) {
+    if (widget is Visibility) {
+      if (widget.visible || widget.maintainSize) {
+        return _resolveVisibility(widget.child);
+      } else {
+        return _resolveVisibility(widget.replacement);
+      }
+    }
+    return widget;
+  }
+
+  bool _isZeroSizeChild(Widget child) {
+    if (child is Visibility) {
+      if (child.visible || child.maintainSize) {
+        return _isZeroSizeChild(child.child);
+      } else {
+        return _isZeroSizeChild(child.replacement);
+      }
+    }
+    if (child is SizedBox) {
+      return (child.width == 0.0 || child.height == 0.0) && child.child == null;
+    }
+    return false;
   }
 }
