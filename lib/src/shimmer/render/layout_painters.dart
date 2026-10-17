@@ -587,8 +587,12 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
         fixedWidth += (child.radius ?? 20) * 2;
       } else if (child is Icon) {
         fixedWidth += child.size ?? 24;
-      } else if (child is Expanded || child is Flexible) {
-        flexCount++;
+      } else if (child is Expanded) {
+        flexCount += child.flex;
+      } else if (child is Flexible) {
+        flexCount += child.flex;
+      } else if (child is Spacer) {
+        flexCount += child.flex;
       }
     }
 
@@ -753,8 +757,12 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
 
       if (knownHeight != null) {
         fixedHeight += knownHeight;
-      } else if (child is Expanded || child is Flexible) {
-        flexibleCount++;
+      } else if (child is Expanded) {
+        flexibleCount += child.flex;
+      } else if (child is Flexible) {
+        flexibleCount += child.flex;
+      } else if (child is Spacer) {
+        flexibleCount += child.flex;
       } else {
         flexibleCount++;
       }
@@ -770,8 +778,16 @@ extension RenderAutoShimmerLayoutPainters on RenderAutoShimmer {
     for (final child in children) {
       if (dy >= offset.dy + size.height) break;
 
+      final flex = child is Expanded
+          ? child.flex
+          : child is Flexible
+              ? child.flex
+              : child is Spacer
+                  ? child.flex
+                  : 1;
+
       final childHeight =
-          _knownColumnChildHeight(child, size.height) ?? fallbackHeight;
+          _knownColumnChildHeight(child, size.height) ?? (fallbackHeight * flex);
 
       _paintWidget(
         canvas,

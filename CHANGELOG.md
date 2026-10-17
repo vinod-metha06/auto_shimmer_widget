@@ -1,3 +1,18 @@
+## 0.0.4
+
+- Added support for essential layout wrappers and spacing widgets:
+  - `SafeArea`
+  - `Opacity` and `AnimatedOpacity`
+  - `Offstage`
+  - `Spacer` (with custom flex factor support in `Row` and `Column`)
+  - `ConstrainedBox`
+  - `FractionallySizedBox`
+  - `LimitedBox`
+  - `ClipRect`
+- Updated `WidgetBlueprintParser` to parse children inside layout and clipping wrappers.
+- Added comprehensive unit and widget tests for all newly supported widgets.
+
+
 ## 0.0.3
 
 - Added support for Flutter's `Visibility` widget across shimmer painting, size estimation, and layout handling.

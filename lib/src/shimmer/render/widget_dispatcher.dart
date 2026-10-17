@@ -54,6 +54,160 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
       return;
     }
 
+    if (widget is SafeArea) {
+      final insets = widget.minimum.resolve(textDirection);
+      _paintWidget(
+        canvas,
+        widget.child,
+        Offset(offset.dx + insets.left, offset.dy + insets.top),
+        Size(
+          max(0, availableSize.width - insets.horizontal),
+          max(0, availableSize.height - insets.vertical),
+        ),
+        depth: depth + 1,
+      );
+      return;
+    }
+
+    if (widget is Opacity) {
+      if (widget.opacity <= 0.0) return;
+      if (widget.child != null) {
+        _paintWidget(
+          canvas,
+          widget.child!,
+          offset,
+          availableSize,
+          depth: depth + 1,
+        );
+      }
+      return;
+    }
+
+    if (widget is AnimatedOpacity) {
+      if (widget.opacity <= 0.0) return;
+      if (widget.child != null) {
+        _paintWidget(
+          canvas,
+          widget.child!,
+          offset,
+          availableSize,
+          depth: depth + 1,
+        );
+      }
+      return;
+    }
+
+    if (widget is Offstage) {
+      if (widget.offstage) return;
+      if (widget.child != null) {
+        _paintWidget(
+          canvas,
+          widget.child!,
+          offset,
+          availableSize,
+          depth: depth + 1,
+        );
+      }
+      return;
+    }
+
+    if (widget is Spacer) {
+      return;
+    }
+
+    if (widget is ConstrainedBox) {
+      if (widget.child != null) {
+        final constraints = widget.constraints;
+        double width = availableSize.width;
+        double height = availableSize.height;
+
+        if (constraints.hasTightWidth) {
+          width = constraints.minWidth;
+        } else if (constraints.hasBoundedWidth) {
+          width = width
+              .clamp(constraints.minWidth, constraints.maxWidth)
+              .toDouble();
+        }
+
+        if (constraints.hasTightHeight) {
+          height = constraints.minHeight;
+        } else if (constraints.hasBoundedHeight) {
+          height = height
+              .clamp(constraints.minHeight, constraints.maxHeight)
+              .toDouble();
+        }
+
+        _paintWidget(
+          canvas,
+          widget.child!,
+          offset,
+          Size(width, height),
+          depth: depth + 1,
+        );
+      }
+      return;
+    }
+
+    if (widget is FractionallySizedBox) {
+      if (widget.child != null) {
+        final widthFactor = widget.widthFactor ?? 1.0;
+        final heightFactor = widget.heightFactor ?? 1.0;
+        final childWidth = availableSize.width * widthFactor;
+        final childHeight = availableSize.height * heightFactor;
+
+        final alignment = widget.alignment.resolve(textDirection);
+        final dx = offset.dx +
+            (availableSize.width - childWidth) * ((alignment.x + 1) / 2);
+        final dy = offset.dy +
+            (availableSize.height - childHeight) * ((alignment.y + 1) / 2);
+
+        _paintWidget(
+          canvas,
+          widget.child!,
+          Offset(dx, dy),
+          Size(childWidth, childHeight),
+          depth: depth + 1,
+        );
+      }
+      return;
+    }
+
+    if (widget is LimitedBox) {
+      if (widget.child != null) {
+        double width = availableSize.width;
+        double height = availableSize.height;
+
+        if (!width.isFinite || width > widget.maxWidth) {
+          width = widget.maxWidth;
+        }
+        if (!height.isFinite || height > widget.maxHeight) {
+          height = widget.maxHeight;
+        }
+
+        _paintWidget(
+          canvas,
+          widget.child!,
+          offset,
+          Size(width, height),
+          depth: depth + 1,
+        );
+      }
+      return;
+    }
+
+    if (widget is ClipRect) {
+      if (widget.child != null) {
+        _paintWidget(
+          canvas,
+          widget.child!,
+          offset,
+          availableSize,
+          depth: depth + 1,
+        );
+      }
+      return;
+    }
+
     if (widget is Text) {
       _paintText(canvas, offset, availableSize, depth);
       return;

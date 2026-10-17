@@ -205,5 +205,152 @@ void main() {
       expect(blueprints.first.kind, SkeletonKind.icon);
     });
   });
+
+  group('v0.0.4 layout wrappers and spacing tests', () {
+    testWidgets('renders shimmer with SafeArea, Opacity, Offstage, and ClipRect',
+        (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: SafeArea(
+                minimum: EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Opacity(
+                      opacity: 0.8,
+                      child: Text('Visible with Opacity'),
+                    ),
+                    Opacity(
+                      opacity: 0.0,
+                      child: Text('Hidden with Zero Opacity'),
+                    ),
+                    AnimatedOpacity(
+                      opacity: 0.7,
+                      duration: Duration(milliseconds: 200),
+                      child: Text('Animated Opacity Content'),
+                    ),
+                    Offstage(
+                      offstage: false,
+                      child: Text('Onstage Content'),
+                    ),
+                    Offstage(
+                      offstage: true,
+                      child: Text('Offstage Content'),
+                    ),
+                    ClipRect(
+                      child: Text('Clipped Content'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with Spacer in Row and Column',
+        (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Row(
+                children: [
+                  CircleAvatar(radius: 20),
+                  Spacer(flex: 2),
+                  Text('Spaced Item'),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets(
+        'renders shimmer with ConstrainedBox, FractionallySizedBox, and LimitedBox',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Column(
+                children: [
+                  ConstrainedBox(
+                    constraints:
+                        const BoxConstraints(maxWidth: 150, maxHeight: 40),
+                    child: const Text('Constrained'),
+                  ),
+                  const SizedBox(
+                    height: 60,
+                    child: FractionallySizedBox(
+                      widthFactor: 0.5,
+                      heightFactor: 0.5,
+                      child: Text('Fractional'),
+                    ),
+                  ),
+                  const LimitedBox(
+                    maxHeight: 50,
+                    maxWidth: 100,
+                    child: Text('Limited'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    test('WidgetBlueprintParser parses layout wrappers correctly', () {
+      final safeAreaBlueprints = WidgetBlueprintParser.parse(
+        const SafeArea(child: Text('Safe')),
+      );
+      expect(safeAreaBlueprints.length, 1);
+      expect(safeAreaBlueprints.first.kind, SkeletonKind.text);
+
+      final zeroOpacityBlueprints = WidgetBlueprintParser.parse(
+        const Opacity(opacity: 0.0, child: Text('Zero')),
+      );
+      expect(zeroOpacityBlueprints, isEmpty);
+
+      final positiveOpacityBlueprints = WidgetBlueprintParser.parse(
+        const Opacity(opacity: 0.5, child: Icon(Icons.star)),
+      );
+      expect(positiveOpacityBlueprints.length, 1);
+      expect(positiveOpacityBlueprints.first.kind, SkeletonKind.icon);
+
+      final offstageBlueprints = WidgetBlueprintParser.parse(
+        const Offstage(offstage: true, child: Text('Off')),
+      );
+      expect(offstageBlueprints, isEmpty);
+
+      final onstageBlueprints = WidgetBlueprintParser.parse(
+        const Offstage(offstage: false, child: CircleAvatar()),
+      );
+      expect(onstageBlueprints.length, 1);
+      expect(onstageBlueprints.first.kind, SkeletonKind.circle);
+
+      final constrainedBlueprints = WidgetBlueprintParser.parse(
+        ConstrainedBox(
+          constraints: const BoxConstraints(),
+          child: const Text('Constrained'),
+        ),
+      );
+      expect(constrainedBlueprints.length, 1);
+      expect(constrainedBlueprints.first.kind, SkeletonKind.text);
+    });
+  });
 }
 

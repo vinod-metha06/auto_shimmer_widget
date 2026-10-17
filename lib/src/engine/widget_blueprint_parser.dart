@@ -35,6 +35,56 @@ class WidgetBlueprintParser {
       return;
     }
 
+    if (widget is SafeArea) {
+      _walk(widget.child, result, depth + 1, '$path/safeArea');
+      return;
+    }
+
+    if (widget is Opacity) {
+      if (widget.opacity > 0 && widget.child != null) {
+        _walk(widget.child!, result, depth + 1, '$path/opacity');
+      }
+      return;
+    }
+
+    if (widget is AnimatedOpacity) {
+      if (widget.opacity > 0 && widget.child != null) {
+        _walk(widget.child!, result, depth + 1, '$path/animatedOpacity');
+      }
+      return;
+    }
+
+    if (widget is Offstage) {
+      if (!widget.offstage && widget.child != null) {
+        _walk(widget.child!, result, depth + 1, '$path/offstage');
+      }
+      return;
+    }
+
+    if (widget is Spacer) {
+      return;
+    }
+
+    if (widget is ConstrainedBox && widget.child != null) {
+      _walk(widget.child!, result, depth + 1, '$path/constrainedBox');
+      return;
+    }
+
+    if (widget is FractionallySizedBox && widget.child != null) {
+      _walk(widget.child!, result, depth + 1, '$path/fractionallySizedBox');
+      return;
+    }
+
+    if (widget is LimitedBox && widget.child != null) {
+      _walk(widget.child!, result, depth + 1, '$path/limitedBox');
+      return;
+    }
+
+    if (widget is ClipRect && widget.child != null) {
+      _walk(widget.child!, result, depth + 1, '$path/clipRect');
+      return;
+    }
+
     if (widget is Text) {
       result.add(
         SkeletonBlueprint(

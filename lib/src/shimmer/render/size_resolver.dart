@@ -26,6 +26,22 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     if (widget is Padding) return _extractImageLikeChild(widget.child);
     if (widget is FittedBox) return _extractImageLikeChild(widget.child);
     if (widget is ClipRRect) return _extractImageLikeChild(widget.child);
+    if (widget is ClipRect) return _extractImageLikeChild(widget.child);
+    if (widget is SafeArea) return _extractImageLikeChild(widget.child);
+    if (widget is Opacity) {
+      return widget.opacity > 0 ? _extractImageLikeChild(widget.child) : null;
+    }
+    if (widget is AnimatedOpacity) {
+      return widget.opacity > 0 ? _extractImageLikeChild(widget.child) : null;
+    }
+    if (widget is Offstage) {
+      return !widget.offstage ? _extractImageLikeChild(widget.child) : null;
+    }
+    if (widget is ConstrainedBox) return _extractImageLikeChild(widget.child);
+    if (widget is FractionallySizedBox) {
+      return _extractImageLikeChild(widget.child);
+    }
+    if (widget is LimitedBox) return _extractImageLikeChild(widget.child);
     if (widget is DecoratedBox) {
       return _extractImageLikeChild(widget.child);
     }
@@ -107,6 +123,37 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       }
     }
 
+    if (child is SafeArea) {
+      return _estimatePositionedChildSize(child.child, stackSize);
+    }
+    if (child is Opacity) {
+      if (child.opacity <= 0 || child.child == null) return Size.zero;
+      return _estimatePositionedChildSize(child.child!, stackSize);
+    }
+    if (child is AnimatedOpacity) {
+      if (child.opacity <= 0 || child.child == null) return Size.zero;
+      return _estimatePositionedChildSize(child.child!, stackSize);
+    }
+    if (child is Offstage) {
+      if (child.offstage || child.child == null) return Size.zero;
+      return _estimatePositionedChildSize(child.child!, stackSize);
+    }
+    if (child is Spacer) {
+      return Size.zero;
+    }
+    if (child is ConstrainedBox && child.child != null) {
+      return _estimatePositionedChildSize(child.child!, stackSize);
+    }
+    if (child is FractionallySizedBox && child.child != null) {
+      return _estimatePositionedChildSize(child.child!, stackSize);
+    }
+    if (child is LimitedBox && child.child != null) {
+      return _estimatePositionedChildSize(child.child!, stackSize);
+    }
+    if (child is ClipRect && child.child != null) {
+      return _estimatePositionedChildSize(child.child!, stackSize);
+    }
+
     if (child is SizedBox) {
       if (child.width == 0 && child.height == 0) {
         return Size.zero;
@@ -181,6 +228,37 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       } else {
         return _estimateWrapChildSize(child.replacement, parentSize);
       }
+    }
+
+    if (child is SafeArea) {
+      return _estimateWrapChildSize(child.child, parentSize);
+    }
+    if (child is Opacity) {
+      if (child.opacity <= 0 || child.child == null) return Size.zero;
+      return _estimateWrapChildSize(child.child!, parentSize);
+    }
+    if (child is AnimatedOpacity) {
+      if (child.opacity <= 0 || child.child == null) return Size.zero;
+      return _estimateWrapChildSize(child.child!, parentSize);
+    }
+    if (child is Offstage) {
+      if (child.offstage || child.child == null) return Size.zero;
+      return _estimateWrapChildSize(child.child!, parentSize);
+    }
+    if (child is Spacer) {
+      return Size.zero;
+    }
+    if (child is ConstrainedBox && child.child != null) {
+      return _estimateWrapChildSize(child.child!, parentSize);
+    }
+    if (child is FractionallySizedBox && child.child != null) {
+      return _estimateWrapChildSize(child.child!, parentSize);
+    }
+    if (child is LimitedBox && child.child != null) {
+      return _estimateWrapChildSize(child.child!, parentSize);
+    }
+    if (child is ClipRect && child.child != null) {
+      return _estimateWrapChildSize(child.child!, parentSize);
     }
 
     if (_isChipLikeWidget(child)) {
@@ -359,6 +437,50 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       }
     }
 
+    if (child is SafeArea) {
+      return _resolveChildWidthInRow(child.child, parentWidth, fallback);
+    }
+    if (child is Opacity) {
+      if (child.opacity <= 0 || child.child == null) return 0.0;
+      return _resolveChildWidthInRow(child.child!, parentWidth, fallback);
+    }
+    if (child is AnimatedOpacity) {
+      if (child.opacity <= 0 || child.child == null) return 0.0;
+      return _resolveChildWidthInRow(child.child!, parentWidth, fallback);
+    }
+    if (child is Offstage) {
+      if (child.offstage || child.child == null) return 0.0;
+      return _resolveChildWidthInRow(child.child!, parentWidth, fallback);
+    }
+    if (child is Spacer) {
+      return fallback * child.flex;
+    }
+    if (child is Expanded) {
+      return fallback * child.flex;
+    }
+    if (child is Flexible) {
+      return fallback * child.flex;
+    }
+    if (child is FractionallySizedBox && child.child != null) {
+      final widthFactor = child.widthFactor ?? 1.0;
+      return parentWidth * widthFactor;
+    }
+    if (child is ConstrainedBox && child.child != null) {
+      final constraints = child.constraints;
+      final innerWidth =
+          _resolveChildWidthInRow(child.child!, parentWidth, fallback);
+      if (constraints.hasTightWidth) return constraints.minWidth;
+      return innerWidth
+          .clamp(constraints.minWidth, constraints.maxWidth)
+          .toDouble();
+    }
+    if (child is LimitedBox && child.child != null) {
+      return _resolveChildWidthInRow(child.child!, parentWidth, fallback);
+    }
+    if (child is ClipRect && child.child != null) {
+      return _resolveChildWidthInRow(child.child!, parentWidth, fallback);
+    }
+
     if (child is SizedBox && child.width != null) {
       return child.width!;
     }
@@ -373,10 +495,6 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
 
     if (child is Icon) {
       return child.size ?? 24;
-    }
-
-    if (child is Expanded || child is Flexible) {
-      return fallback;
     }
 
     return fallback;
@@ -405,6 +523,48 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
           parentHeight,
         );
       }
+    }
+
+    if (widget is SafeArea) {
+      return _estimateWidgetHeight(widget.child, parentHeight);
+    }
+    if (widget is Opacity) {
+      if (widget.opacity <= 0 || widget.child == null) return 0.0;
+      return _estimateWidgetHeight(widget.child!, parentHeight);
+    }
+    if (widget is AnimatedOpacity) {
+      if (widget.opacity <= 0 || widget.child == null) return 0.0;
+      return _estimateWidgetHeight(widget.child!, parentHeight);
+    }
+    if (widget is Offstage) {
+      if (widget.offstage || widget.child == null) return 0.0;
+      return _estimateWidgetHeight(widget.child!, parentHeight);
+    }
+    if (widget is Spacer) {
+      return null;
+    }
+    if (widget is FractionallySizedBox && widget.child != null) {
+      if (widget.heightFactor != null && parentHeight.isFinite) {
+        return parentHeight * widget.heightFactor!;
+      }
+      return _estimateWidgetHeight(widget.child!, parentHeight);
+    }
+    if (widget is ConstrainedBox && widget.child != null) {
+      final constraints = widget.constraints;
+      final inner = _estimateWidgetHeight(widget.child!, parentHeight);
+      if (constraints.hasTightHeight) return constraints.minHeight;
+      if (inner != null) {
+        return inner
+            .clamp(constraints.minHeight, constraints.maxHeight)
+            .toDouble();
+      }
+      return constraints.minHeight > 0 ? constraints.minHeight : null;
+    }
+    if (widget is LimitedBox && widget.child != null) {
+      return _estimateWidgetHeight(widget.child!, parentHeight);
+    }
+    if (widget is ClipRect && widget.child != null) {
+      return _estimateWidgetHeight(widget.child!, parentHeight);
     }
 
     if (widget is Directionality) {
@@ -594,6 +754,45 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       }
     }
 
+    if (child is SafeArea) {
+      return _estimateRowChildHeight(child.child);
+    }
+    if (child is Opacity) {
+      if (child.opacity <= 0 || child.child == null) return 0.0;
+      return _estimateRowChildHeight(child.child!);
+    }
+    if (child is AnimatedOpacity) {
+      if (child.opacity <= 0 || child.child == null) return 0.0;
+      return _estimateRowChildHeight(child.child!);
+    }
+    if (child is Offstage) {
+      if (child.offstage || child.child == null) return 0.0;
+      return _estimateRowChildHeight(child.child!);
+    }
+    if (child is Spacer) {
+      return 0.0;
+    }
+    if (child is FractionallySizedBox && child.child != null) {
+      return _estimateRowChildHeight(child.child!);
+    }
+    if (child is ConstrainedBox && child.child != null) {
+      final constraints = child.constraints;
+      final inner = _estimateRowChildHeight(child.child!);
+      if (constraints.hasTightHeight) return constraints.minHeight;
+      if (inner != null) {
+        return inner
+            .clamp(constraints.minHeight, constraints.maxHeight)
+            .toDouble();
+      }
+      return constraints.minHeight > 0 ? constraints.minHeight : null;
+    }
+    if (child is LimitedBox && child.child != null) {
+      return _estimateRowChildHeight(child.child!);
+    }
+    if (child is ClipRect && child.child != null) {
+      return _estimateRowChildHeight(child.child!);
+    }
+
     if (child is Directionality) {
       return _estimateRowChildHeight(
         child.child,
@@ -710,6 +909,36 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
         return _resolveVisibility(widget.replacement);
       }
     }
+    if (widget is Offstage) {
+      if (!widget.offstage && widget.child != null) {
+        return _resolveVisibility(widget.child!);
+      }
+      return const SizedBox.shrink();
+    }
+    if (widget is Opacity) {
+      if (widget.opacity > 0 && widget.child != null) {
+        return _resolveVisibility(widget.child!);
+      }
+      return const SizedBox.shrink();
+    }
+    if (widget is AnimatedOpacity) {
+      if (widget.opacity > 0 && widget.child != null) {
+        return _resolveVisibility(widget.child!);
+      }
+      return const SizedBox.shrink();
+    }
+    if (widget is SafeArea) {
+      return _resolveVisibility(widget.child);
+    }
+    if (widget is ClipRect && widget.child != null) {
+      return _resolveVisibility(widget.child!);
+    }
+    if (widget is ConstrainedBox && widget.child != null) {
+      return _resolveVisibility(widget.child!);
+    }
+    if (widget is LimitedBox && widget.child != null) {
+      return _resolveVisibility(widget.child!);
+    }
     return widget;
   }
 
@@ -720,6 +949,27 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       } else {
         return _isZeroSizeChild(child.replacement);
       }
+    }
+    if (child is Offstage) {
+      return child.offstage ||
+          child.child == null ||
+          _isZeroSizeChild(child.child!);
+    }
+    if (child is Opacity) {
+      return child.opacity <= 0.0 ||
+          child.child == null ||
+          _isZeroSizeChild(child.child!);
+    }
+    if (child is AnimatedOpacity) {
+      return child.opacity <= 0.0 ||
+          child.child == null ||
+          _isZeroSizeChild(child.child!);
+    }
+    if (child is SafeArea) {
+      return _isZeroSizeChild(child.child);
+    }
+    if (child is ClipRect && child.child != null) {
+      return _isZeroSizeChild(child.child!);
     }
     if (child is SizedBox) {
       return (child.width == 0.0 || child.height == 0.0) && child.child == null;
