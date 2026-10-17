@@ -1,3 +1,10 @@
+## 0.0.3
+
+- Added support for Flutter's `Visibility` widget across shimmer painting, size estimation, and layout handling.
+- Supported `visible`, `replacement`, and `maintainSize` modes for `Visibility`.
+- Added unit and widget tests for `Visibility`.
+
+
 ## 0.0.2
 
 - Fixed pub.dev static analysis lint issues.
