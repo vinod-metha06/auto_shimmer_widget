@@ -75,7 +75,8 @@ The package automatically reads your widget structure and paints a matching shim
 - Automatic shimmer skeleton generation from existing widgets
 - `ListView`, `ListView.builder`, `GridView`, and `GridView.builder` support
 - `Container`, `Row`, `Column`, `Stack`, `Positioned`, `ListTile`, `Card`, `Wrap`, `Chip`, `Visibility`, `SafeArea`, `Spacer`, `Opacity`
-- `Image`, `Icon`, `CircleAvatar`, `Text`, `RichText`, `TextField`
+- Form Controls & Selection: `Checkbox`, `CheckboxListTile`, `Switch`, `SwitchListTile`, `Radio`, `RadioListTile`, `Slider`, `RangeSlider`, `DropdownButton`, `DropdownMenu`
+- `Image`, `Icon`, `CircleAvatar`, `Text`, `RichText`, `TextField`, `TextFormField`
 - Buttons: `ElevatedButton`, `OutlinedButton`, `TextButton`, `IconButton`, `FloatingActionButton`
 - Dark mode support
 - Arabic / RTL support
@@ -91,7 +92,7 @@ Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  auto_shimmer_widget: ^0.0.4
+  auto_shimmer_widget: ^1.0.0
 ```
 
 Then run:
@@ -382,6 +383,43 @@ AutoShimmer(
         ),
       ],
     ),
+  ),
+)
+```
+
+---
+
+## Form Controls & Settings Example
+
+```dart
+AutoShimmer(
+  child: Column(
+    children: [
+      SwitchListTile(
+        value: true,
+        onChanged: (val) {},
+        title: const Text('Push Notifications'),
+        subtitle: const Text('Receive daily updates and alerts'),
+        secondary: const Icon(Icons.notifications_active),
+      ),
+      CheckboxListTile(
+        value: false,
+        onChanged: (val) {},
+        title: const Text('Save payment information'),
+        controlAffinity: ListTileControlAffinity.leading,
+      ),
+      Slider(
+        value: 0.7,
+        onChanged: (val) {},
+      ),
+      DropdownButton<String>(
+        value: 'English',
+        items: const [
+          DropdownMenuItem(value: 'English', child: Text('English')),
+        ],
+        onChanged: (val) {},
+      ),
+    ],
   ),
 )
 ```
@@ -695,7 +733,7 @@ AutoShimmer({
 | Scroll | `SingleChildScrollView`, `ListView`, `ListView.builder`, `GridView`, `GridView.builder` |
 | Material | `Card`, `Material`, `InkWell`, `GestureDetector`, `ListTile` |
 | Content | `Text`, `RichText`, `Icon`, `Image`, `CircleAvatar` |
-| Forms | `TextField`, `TextFormField` |
+| Forms & Selection | `Checkbox`, `CheckboxListTile`, `Switch`, `SwitchListTile`, `Radio`, `RadioListTile`, `Slider`, `RangeSlider`, `DropdownButton`, `DropdownMenu`, `TextField`, `TextFormField` |
 | Actions | `ElevatedButton`, `OutlinedButton`, `TextButton`, `IconButton`, `FloatingActionButton` |
 | Others | `Chip`, `ActionChip`, `FilterChip`, `ChoiceChip`, `InputChip`, `Divider`, `VerticalDivider`, `AspectRatio` |
 

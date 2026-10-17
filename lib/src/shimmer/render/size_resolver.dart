@@ -174,6 +174,39 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       return const Size(110, 48);
     }
 
+    if (child is Checkbox) {
+      return const Size(24, 24);
+    }
+
+    if (child is Switch) {
+      return const Size(48, 28);
+    }
+
+    if (child is Radio) {
+      return const Size(24, 24);
+    }
+
+    if (child is Slider || child is RangeSlider) {
+      return Size(
+        min(stackSize.width * 0.6, 200),
+        40,
+      );
+    }
+
+    if (child is DropdownButton) {
+      return Size(
+        min(stackSize.width * 0.45, 140),
+        48,
+      );
+    }
+
+    if (child is DropdownMenu) {
+      return Size(
+        min(stackSize.width * 0.55, 180),
+        56,
+      );
+    }
+
     if (child is Text) {
       return Size(
         min(stackSize.width * 0.45, 180),
@@ -263,6 +296,30 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
 
     if (_isChipLikeWidget(child)) {
       return const Size(90, 36);
+    }
+
+    if (child is Checkbox) {
+      return const Size(36, 36);
+    }
+
+    if (child is Switch) {
+      return const Size(54, 36);
+    }
+
+    if (child is Radio) {
+      return const Size(36, 36);
+    }
+
+    if (child is Slider || child is RangeSlider) {
+      return Size(min(parentSize.width * 0.6, 180), 40);
+    }
+
+    if (child is DropdownButton) {
+      return Size(min(parentSize.width * 0.45, 140), 48);
+    }
+
+    if (child is DropdownMenu) {
+      return Size(min(parentSize.width * 0.55, 180), 56);
     }
 
     if (child is SizedBox) {
@@ -497,6 +554,26 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       return child.size ?? 24;
     }
 
+    if (child is Checkbox) {
+      return 24.0;
+    }
+
+    if (child is Switch) {
+      return 48.0;
+    }
+
+    if (child is Radio) {
+      return 24.0;
+    }
+
+    if (child is DropdownButton) {
+      return min(parentWidth * 0.45, 140.0);
+    }
+
+    if (child is DropdownMenu) {
+      return min(parentWidth * 0.55, 180.0);
+    }
+
     return fallback;
   }
 
@@ -619,6 +696,42 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     }
 
     if (widget is TextField || widget is TextFormField) {
+      return 56;
+    }
+
+    if (widget is Checkbox) {
+      return 40;
+    }
+
+    if (widget is CheckboxListTile) {
+      return widget.subtitle != null ? 72 : 56;
+    }
+
+    if (widget is Switch) {
+      return 40;
+    }
+
+    if (widget is SwitchListTile) {
+      return widget.subtitle != null ? 72 : 56;
+    }
+
+    if (widget is Radio) {
+      return 40;
+    }
+
+    if (widget is RadioListTile) {
+      return widget.subtitle != null ? 72 : 56;
+    }
+
+    if (widget is Slider || widget is RangeSlider) {
+      return 44;
+    }
+
+    if (widget is DropdownButton) {
+      return 48;
+    }
+
+    if (widget is DropdownMenu) {
       return 56;
     }
 
@@ -852,6 +965,30 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
 
     if (_isButtonLikeWidget(child)) {
       return 48;
+    }
+
+    if (child is Checkbox) {
+      return 24;
+    }
+
+    if (child is Switch) {
+      return 32;
+    }
+
+    if (child is Radio) {
+      return 24;
+    }
+
+    if (child is Slider || child is RangeSlider) {
+      return 40;
+    }
+
+    if (child is DropdownButton) {
+      return 48;
+    }
+
+    if (child is DropdownMenu) {
+      return 56;
     }
 
     if (child is Padding) {

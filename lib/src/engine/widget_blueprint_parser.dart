@@ -118,6 +118,196 @@ class WidgetBlueprintParser {
       return;
     }
 
+    if (widget is Checkbox) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth,
+          id: '$path/checkbox',
+        ),
+      );
+      return;
+    }
+
+    if (widget is CheckboxListTile) {
+      if (widget.secondary != null) {
+        _walk(
+          widget.secondary!,
+          result,
+          depth + 1,
+          '$path/checkboxListTile/secondary',
+        );
+      }
+      if (widget.title != null) {
+        _walk(
+          widget.title!,
+          result,
+          depth + 1,
+          '$path/checkboxListTile/title',
+        );
+      }
+      if (widget.subtitle != null) {
+        _walk(
+          widget.subtitle!,
+          result,
+          depth + 1,
+          '$path/checkboxListTile/subtitle',
+        );
+      }
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth + 1,
+          id: '$path/checkboxListTile/checkbox',
+        ),
+      );
+      return;
+    }
+
+    if (widget is Switch) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth,
+          id: '$path/switch',
+        ),
+      );
+      return;
+    }
+
+    if (widget is SwitchListTile) {
+      if (widget.secondary != null) {
+        _walk(
+          widget.secondary!,
+          result,
+          depth + 1,
+          '$path/switchListTile/secondary',
+        );
+      }
+      if (widget.title != null) {
+        _walk(
+          widget.title!,
+          result,
+          depth + 1,
+          '$path/switchListTile/title',
+        );
+      }
+      if (widget.subtitle != null) {
+        _walk(
+          widget.subtitle!,
+          result,
+          depth + 1,
+          '$path/switchListTile/subtitle',
+        );
+      }
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth + 1,
+          id: '$path/switchListTile/switch',
+        ),
+      );
+      return;
+    }
+
+    if (widget is Radio) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.circle,
+          depth: depth,
+          id: '$path/radio',
+        ),
+      );
+      return;
+    }
+
+    if (widget is RadioListTile) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.circle,
+          depth: depth + 1,
+          id: '$path/radioListTile/radio',
+        ),
+      );
+      if (widget.title != null) {
+        _walk(
+          widget.title!,
+          result,
+          depth + 1,
+          '$path/radioListTile/title',
+        );
+      }
+      if (widget.subtitle != null) {
+        _walk(
+          widget.subtitle!,
+          result,
+          depth + 1,
+          '$path/radioListTile/subtitle',
+        );
+      }
+      if (widget.secondary != null) {
+        _walk(
+          widget.secondary!,
+          result,
+          depth + 1,
+          '$path/radioListTile/secondary',
+        );
+      }
+      return;
+    }
+
+    if (widget is Slider) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth,
+          id: '$path/slider',
+        ),
+      );
+      return;
+    }
+
+    if (widget is RangeSlider) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth,
+          id: '$path/rangeSlider',
+        ),
+      );
+      return;
+    }
+
+    if (widget is DropdownButton) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth,
+          id: '$path/dropdownButton',
+        ),
+      );
+      return;
+    }
+
+    if (widget is DropdownMenu) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth,
+          id: '$path/dropdownMenu',
+        ),
+      );
+      if (widget.leadingIcon != null) {
+        _walk(
+          widget.leadingIcon!,
+          result,
+          depth + 1,
+          '$path/dropdownMenu/leadingIcon',
+        );
+      }
+      return;
+    }
+
     if (widget is ListTile) {
       if (widget.leading != null) {
         _walk(

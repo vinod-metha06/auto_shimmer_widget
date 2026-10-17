@@ -352,5 +352,343 @@ void main() {
       expect(constrainedBlueprints.first.kind, SkeletonKind.text);
     });
   });
+
+  group('v1.0.0 Form Controls & Selection Inputs tests', () {
+    testWidgets('renders shimmer with Checkbox and CheckboxListTile',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Column(
+                children: [
+                  Checkbox(value: true, onChanged: (_) {}),
+                  CheckboxListTile(
+                    value: false,
+                    onChanged: (_) {},
+                    title: const Text('Agree to terms'),
+                    subtitle: const Text('Read carefully'),
+                    secondary: const Icon(Icons.info),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                  CheckboxListTile(
+                    value: true,
+                    onChanged: (_) {},
+                    title: const Text('Notifications'),
+                    controlAffinity: ListTileControlAffinity.trailing,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with Switch and SwitchListTile',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Column(
+                children: [
+                  Switch(value: true, onChanged: (_) {}),
+                  SwitchListTile(
+                    value: false,
+                    onChanged: (_) {},
+                    title: const Text('Dark Mode'),
+                    subtitle: const Text('Enable dark theme'),
+                    secondary: const Icon(Icons.dark_mode),
+                    controlAffinity: ListTileControlAffinity.trailing,
+                  ),
+                  SwitchListTile(
+                    value: true,
+                    onChanged: (_) {},
+                    title: const Text('Auto-save'),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with Radio and RadioListTile',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Column(
+                children: [
+                  // ignore: deprecated_member_use
+                  Radio<int>(value: 1, groupValue: 1, onChanged: (_) {}),
+                  // ignore: deprecated_member_use
+                  RadioListTile<String>(
+                    value: 'opt1',
+                    // ignore: deprecated_member_use
+                    groupValue: 'opt1',
+                    // ignore: deprecated_member_use
+                    onChanged: (_) {},
+                    title: const Text('Standard Delivery'),
+                    subtitle: const Text('3-5 business days'),
+                    secondary: const Icon(Icons.local_shipping),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                  // ignore: deprecated_member_use
+                  RadioListTile<String>(
+                    value: 'opt2',
+                    // ignore: deprecated_member_use
+                    groupValue: 'opt1',
+                    // ignore: deprecated_member_use
+                    onChanged: (_) {},
+                    title: const Text('Express Delivery'),
+                    controlAffinity: ListTileControlAffinity.trailing,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with Slider and RangeSlider',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Column(
+                children: [
+                  Slider(value: 0.6, min: 0.0, max: 1.0, onChanged: (_) {}),
+                  RangeSlider(
+                    values: const RangeValues(0.2, 0.8),
+                    min: 0.0,
+                    max: 1.0,
+                    onChanged: (_) {},
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with DropdownButton and DropdownMenu',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Column(
+                children: [
+                  DropdownButton<String>(
+                    value: 'One',
+                    items: const [
+                      DropdownMenuItem(value: 'One', child: Text('One')),
+                    ],
+                    onChanged: (_) {},
+                  ),
+                  const DropdownMenu<String>(
+                    leadingIcon: Icon(Icons.category),
+                    label: Text('Category'),
+                    dropdownMenuEntries: [
+                      DropdownMenuEntry(value: 'A', label: 'Item A'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with form controls in RTL directionality',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Scaffold(
+              body: AutoShimmer(
+                isLoading: true,
+                child: Column(
+                  children: [
+                    CheckboxListTile(
+                      value: true,
+                      onChanged: (_) {},
+                      title: const Text('RTL Checkbox'),
+                      subtitle: const Text('Subtitle'),
+                      secondary: const Icon(Icons.star),
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                    SwitchListTile(
+                      value: false,
+                      onChanged: (_) {},
+                      title: const Text('RTL Switch'),
+                      secondary: const Icon(Icons.wifi),
+                      controlAffinity: ListTileControlAffinity.trailing,
+                    ),
+                    // ignore: deprecated_member_use
+                    RadioListTile<int>(
+                      value: 1,
+                      // ignore: deprecated_member_use
+                      groupValue: 1,
+                      // ignore: deprecated_member_use
+                      onChanged: (_) {},
+                      title: const Text('RTL Radio'),
+                    ),
+                    Slider(value: 0.3, onChanged: (_) {}),
+                    RangeSlider(
+                      values: const RangeValues(0.3, 0.7),
+                      onChanged: (_) {},
+                    ),
+                    DropdownButton<String>(
+                      items: const [],
+                      onChanged: (_) {},
+                    ),
+                    const DropdownMenu<String>(
+                      leadingIcon: Icon(Icons.language),
+                      dropdownMenuEntries: [],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with form controls in Row and Wrap',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Checkbox(value: true, onChanged: (_) {}),
+                      const SizedBox(width: 8),
+                      const Text('Remember me'),
+                      const Spacer(),
+                      Switch(value: false, onChanged: (_) {}),
+                    ],
+                  ),
+                  Wrap(
+                    spacing: 8.0,
+                    children: [
+                      Checkbox(value: false, onChanged: (_) {}),
+                      Switch(value: true, onChanged: (_) {}),
+                      // ignore: deprecated_member_use
+                      Radio<int>(value: 1, groupValue: 1, onChanged: (_) {}),
+                      DropdownButton<String>(
+                        items: const [],
+                        onChanged: (_) {},
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    test('WidgetBlueprintParser parses form controls correctly', () {
+      final checkboxBlueprint = WidgetBlueprintParser.parse(
+        Checkbox(value: true, onChanged: (_) {}),
+      );
+      expect(checkboxBlueprint.length, 1);
+      expect(checkboxBlueprint.first.kind, SkeletonKind.rect);
+
+      final switchBlueprint = WidgetBlueprintParser.parse(
+        Switch(value: true, onChanged: (_) {}),
+      );
+      expect(switchBlueprint.length, 1);
+      expect(switchBlueprint.first.kind, SkeletonKind.rect);
+
+      final radioBlueprint = WidgetBlueprintParser.parse(
+        // ignore: deprecated_member_use
+        Radio<int>(value: 1, groupValue: 1, onChanged: (_) {}),
+      );
+      expect(radioBlueprint.length, 1);
+      expect(radioBlueprint.first.kind, SkeletonKind.circle);
+
+      final sliderBlueprint = WidgetBlueprintParser.parse(
+        Slider(value: 0.5, onChanged: (_) {}),
+      );
+      expect(sliderBlueprint.length, 1);
+      expect(sliderBlueprint.first.kind, SkeletonKind.rect);
+
+      final rangeSliderBlueprint = WidgetBlueprintParser.parse(
+        RangeSlider(
+          values: const RangeValues(0.2, 0.8),
+          onChanged: (_) {},
+        ),
+      );
+      expect(rangeSliderBlueprint.length, 1);
+      expect(rangeSliderBlueprint.first.kind, SkeletonKind.rect);
+
+      final dropdownBlueprint = WidgetBlueprintParser.parse(
+        DropdownButton<String>(items: const [], onChanged: (_) {}),
+      );
+      expect(dropdownBlueprint.length, 1);
+      expect(dropdownBlueprint.first.kind, SkeletonKind.rect);
+
+      final menuBlueprint = WidgetBlueprintParser.parse(
+        const DropdownMenu<String>(
+          leadingIcon: Icon(Icons.settings),
+          dropdownMenuEntries: [],
+        ),
+      );
+      expect(menuBlueprint.length, 2);
+      expect(menuBlueprint[0].kind, SkeletonKind.rect);
+      expect(menuBlueprint[1].kind, SkeletonKind.icon);
+
+      final listTileBlueprints = WidgetBlueprintParser.parse(
+        CheckboxListTile(
+          value: true,
+          onChanged: (_) {},
+          title: const Text('Title'),
+          subtitle: const Text('Subtitle'),
+          secondary: const Icon(Icons.check),
+        ),
+      );
+      expect(listTileBlueprints.length, 4);
+      expect(listTileBlueprints.any((b) => b.kind == SkeletonKind.icon), isTrue);
+      expect(listTileBlueprints.any((b) => b.kind == SkeletonKind.text), isTrue);
+      expect(listTileBlueprints.any((b) => b.kind == SkeletonKind.rect), isTrue);
+    });
+  });
 }
 

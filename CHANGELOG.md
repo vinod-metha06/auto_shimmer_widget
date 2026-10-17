@@ -1,3 +1,16 @@
+## 1.0.0
+
+- Added first-class skeleton support for Form Controls & Selection Inputs:
+  - `Checkbox` & `CheckboxListTile`: Rounded square box placeholder with leading/trailing text lines, secondary widget, and `controlAffinity` support.
+  - `Switch` & `SwitchListTile`: Pill-shaped toggle indicator with thumb circle and `controlAffinity` support.
+  - `Radio` & `RadioListTile`: Circular radio button placeholder with inner dot indicator and `controlAffinity` support.
+  - `Slider` & `RangeSlider`: Horizontal track line with circular thumb indicator(s) and active track segments.
+  - `DropdownButton` & `DropdownMenu`: Outlined container with placeholder text, optional leading icon, and trailing chevron.
+- Added full RTL directionality awareness for all form controls and list tiles.
+- Updated `WidgetBlueprintParser` with blueprint parsing for form and selection widgets.
+- Updated size heuristics in `size_resolver` for all form widgets in `Column`, `Row`, `Wrap`, and `Stack`.
+- Added comprehensive unit and widget tests covering form controls and selection inputs.
+
 ## 0.0.4
 
 - Added support for essential layout wrappers and spacing widgets:

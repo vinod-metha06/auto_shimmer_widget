@@ -223,6 +223,56 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
       return;
     }
 
+    if (widget is Checkbox) {
+      _paintCheckbox(canvas, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is CheckboxListTile) {
+      _paintCheckboxListTile(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is Switch) {
+      _paintSwitch(canvas, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is SwitchListTile) {
+      _paintSwitchListTile(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is Radio) {
+      _paintRadio(canvas, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is RadioListTile) {
+      _paintRadioListTile(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is Slider) {
+      _paintSlider(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is RangeSlider) {
+      _paintRangeSlider(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is DropdownButton) {
+      _paintDropdownButton(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is DropdownMenu) {
+      _paintDropdownMenu(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
     if (_isImageLikeWidget(widget)) {
       _paintImagePlaceholder(canvas, offset, availableSize, depth);
       return;
