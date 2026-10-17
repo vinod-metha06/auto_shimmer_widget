@@ -14,6 +14,7 @@ part 'render/layout_painters.dart';
 part 'render/size_resolver.dart';
 part 'render/shimmer_paint.dart';
 part 'render/form_painters.dart';
+part 'render/navigation_painters.dart';
 
 class RenderAutoShimmer extends RenderProxyBox {
   Widget originalWidget;

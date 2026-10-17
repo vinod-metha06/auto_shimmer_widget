@@ -690,5 +690,236 @@ void main() {
       expect(listTileBlueprints.any((b) => b.kind == SkeletonKind.rect), isTrue);
     });
   });
+
+  group('v1.1.0 Navigation, App Bars & Expansion tests', () {
+    testWidgets('renders shimmer with AppBar and SliverAppBar', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: AutoShimmer(
+                isLoading: true,
+                child: AppBar(
+                  leading: const Icon(Icons.menu),
+                  title: const Text('Dashboard'),
+                  actions: const [
+                    Icon(Icons.search),
+                    Icon(Icons.more_vert),
+                  ],
+                ),
+              ),
+            ),
+            body: const AutoShimmer(
+              isLoading: true,
+              child: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    expandedHeight: 120.0,
+                    leading: Icon(Icons.arrow_back),
+                    title: Text('Sliver Header'),
+                    actions: [Icon(Icons.share)],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsNWidgets(2));
+    });
+
+    testWidgets('renders shimmer with TabBar and Tab', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              appBar: PreferredSize(
+                preferredSize: Size.fromHeight(48.0),
+                child: AutoShimmer(
+                  isLoading: true,
+                  child: TabBar(
+                    tabs: [
+                      Tab(icon: Icon(Icons.home), text: 'Home'),
+                      Tab(icon: Icon(Icons.explore), text: 'Explore'),
+                      Tab(text: 'Profile'),
+                    ],
+                  ),
+                ),
+              ),
+              body: TabBarView(
+                children: [
+                  Center(child: Text('1')),
+                  Center(child: Text('2')),
+                  Center(child: Text('3')),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with Badge and Placeholder', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Column(
+                children: [
+                  Badge(
+                    label: Text('5'),
+                    child: Icon(Icons.notifications),
+                  ),
+                  SizedBox(height: 12),
+                  Badge(
+                    child: CircleAvatar(radius: 20),
+                  ),
+                  SizedBox(height: 12),
+                  SizedBox(
+                    height: 100,
+                    width: 200,
+                    child: Placeholder(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with ExpansionTile (collapsed & expanded)',
+        (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: AutoShimmer(
+              isLoading: true,
+              child: Column(
+                children: [
+                  ExpansionTile(
+                    leading: Icon(Icons.folder),
+                    title: Text('Documents'),
+                    subtitle: Text('3 files'),
+                    children: [
+                      Text('Item 1'),
+                      Text('Item 2'),
+                    ],
+                  ),
+                  ExpansionTile(
+                    initiallyExpanded: true,
+                    title: Text('Expanded Section'),
+                    children: [
+                      ListTile(title: Text('Sub-item A')),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsOneWidget);
+    });
+
+    testWidgets('renders shimmer with navigation widgets in RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Scaffold(
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(kToolbarHeight),
+                child: AutoShimmer(
+                  isLoading: true,
+                  child: AppBar(
+                    leading: const Icon(Icons.menu),
+                    title: const Text('RTL Header'),
+                    actions: const [Icon(Icons.search)],
+                  ),
+                ),
+              ),
+              body: const AutoShimmer(
+                isLoading: true,
+                child: Column(
+                  children: [
+                    Badge(
+                      label: Text('3'),
+                      child: Icon(Icons.mail),
+                    ),
+                    ExpansionTile(
+                      leading: Icon(Icons.settings),
+                      title: Text('RTL Expansion'),
+                      subtitle: Text('Details'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byWidgetPredicate(_isRenderAutoShimmerWidget), findsNWidgets(2));
+    });
+
+    test('WidgetBlueprintParser parses navigation & chrome widgets correctly', () {
+      final appBarBlueprints = WidgetBlueprintParser.parse(
+        AppBar(
+          leading: const Icon(Icons.menu),
+          title: const Text('Title'),
+          actions: const [Icon(Icons.search)],
+        ),
+      );
+      expect(appBarBlueprints.any((b) => b.kind == SkeletonKind.rect), isTrue);
+      expect(appBarBlueprints.any((b) => b.kind == SkeletonKind.icon), isTrue);
+      expect(appBarBlueprints.any((b) => b.kind == SkeletonKind.text), isTrue);
+
+      final tabBlueprints = WidgetBlueprintParser.parse(
+        const TabBar(
+          tabs: [
+            Tab(icon: Icon(Icons.home), text: 'Home'),
+            Tab(text: 'Settings'),
+          ],
+        ),
+      );
+      expect(tabBlueprints.any((b) => b.kind == SkeletonKind.icon), isTrue);
+      expect(tabBlueprints.any((b) => b.kind == SkeletonKind.text), isTrue);
+
+      final badgeBlueprints = WidgetBlueprintParser.parse(
+        const Badge(
+          label: Text('1'),
+          child: Icon(Icons.shopping_cart),
+        ),
+      );
+      expect(badgeBlueprints.any((b) => b.kind == SkeletonKind.icon), isTrue);
+      expect(badgeBlueprints.any((b) => b.kind == SkeletonKind.rect), isTrue);
+
+      final expansionBlueprints = WidgetBlueprintParser.parse(
+        const ExpansionTile(
+          leading: Icon(Icons.info),
+          title: Text('More Info'),
+        ),
+      );
+      expect(expansionBlueprints.any((b) => b.kind == SkeletonKind.icon), isTrue);
+      expect(expansionBlueprints.any((b) => b.kind == SkeletonKind.text), isTrue);
+
+      final placeholderBlueprints = WidgetBlueprintParser.parse(
+        const Placeholder(),
+      );
+      expect(placeholderBlueprints.length, 1);
+      expect(placeholderBlueprints.first.kind, SkeletonKind.rect);
+    });
+  });
 }
 

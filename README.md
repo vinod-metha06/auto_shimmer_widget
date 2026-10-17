@@ -76,6 +76,7 @@ The package automatically reads your widget structure and paints a matching shim
 - `ListView`, `ListView.builder`, `GridView`, and `GridView.builder` support
 - `Container`, `Row`, `Column`, `Stack`, `Positioned`, `ListTile`, `Card`, `Wrap`, `Chip`, `Visibility`, `SafeArea`, `Spacer`, `Opacity`
 - Form Controls & Selection: `Checkbox`, `CheckboxListTile`, `Switch`, `SwitchListTile`, `Radio`, `RadioListTile`, `Slider`, `RangeSlider`, `DropdownButton`, `DropdownMenu`
+- Navigation & Chrome: `AppBar`, `SliverAppBar`, `TabBar`, `Tab`, `Badge`, `ExpansionTile`, `Placeholder`
 - `Image`, `Icon`, `CircleAvatar`, `Text`, `RichText`, `TextField`, `TextFormField`
 - Buttons: `ElevatedButton`, `OutlinedButton`, `TextButton`, `IconButton`, `FloatingActionButton`
 - Dark mode support
@@ -92,7 +93,7 @@ Add this to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  auto_shimmer_widget: ^1.0.0
+  auto_shimmer_widget: ^1.1.0
 ```
 
 Then run:
@@ -734,6 +735,7 @@ AutoShimmer({
 | Material | `Card`, `Material`, `InkWell`, `GestureDetector`, `ListTile` |
 | Content | `Text`, `RichText`, `Icon`, `Image`, `CircleAvatar` |
 | Forms & Selection | `Checkbox`, `CheckboxListTile`, `Switch`, `SwitchListTile`, `Radio`, `RadioListTile`, `Slider`, `RangeSlider`, `DropdownButton`, `DropdownMenu`, `TextField`, `TextFormField` |
+| Navigation & Chrome | `AppBar`, `SliverAppBar`, `TabBar`, `Tab`, `Badge`, `ExpansionTile`, `Placeholder` |
 | Actions | `ElevatedButton`, `OutlinedButton`, `TextButton`, `IconButton`, `FloatingActionButton` |
 | Others | `Chip`, `ActionChip`, `FilterChip`, `ChoiceChip`, `InputChip`, `Divider`, `VerticalDivider`, `AspectRatio` |
 

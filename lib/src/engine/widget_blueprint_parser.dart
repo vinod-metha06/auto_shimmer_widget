@@ -308,6 +308,156 @@ class WidgetBlueprintParser {
       return;
     }
 
+    if (widget is AppBar) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth,
+          id: '$path/appBar',
+        ),
+      );
+      if (widget.leading != null) {
+        _walk(widget.leading!, result, depth + 1, '$path/appBar/leading');
+      }
+      if (widget.title != null) {
+        _walk(widget.title!, result, depth + 1, '$path/appBar/title');
+      }
+      if (widget.actions != null) {
+        for (int i = 0; i < widget.actions!.length; i++) {
+          _walk(widget.actions![i], result, depth + 1, '$path/appBar/action/$i');
+        }
+      }
+      if (widget.bottom != null) {
+        _walk(widget.bottom!, result, depth + 1, '$path/appBar/bottom');
+      }
+      return;
+    }
+
+    if (widget is SliverAppBar) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth,
+          id: '$path/sliverAppBar',
+        ),
+      );
+      if (widget.leading != null) {
+        _walk(widget.leading!, result, depth + 1, '$path/sliverAppBar/leading');
+      }
+      if (widget.title != null) {
+        _walk(widget.title!, result, depth + 1, '$path/sliverAppBar/title');
+      }
+      if (widget.actions != null) {
+        for (int i = 0; i < widget.actions!.length; i++) {
+          _walk(
+            widget.actions![i],
+            result,
+            depth + 1,
+            '$path/sliverAppBar/action/$i',
+          );
+        }
+      }
+      if (widget.bottom != null) {
+        _walk(widget.bottom!, result, depth + 1, '$path/sliverAppBar/bottom');
+      }
+      return;
+    }
+
+    if (widget is TabBar) {
+      for (int i = 0; i < widget.tabs.length; i++) {
+        _walk(widget.tabs[i], result, depth + 1, '$path/tabBar/$i');
+      }
+      return;
+    }
+
+    if (widget is Tab) {
+      if (widget.child != null) {
+        _walk(widget.child!, result, depth + 1, '$path/tab/child');
+      } else {
+        if (widget.icon != null) {
+          _walk(widget.icon!, result, depth + 1, '$path/tab/icon');
+        }
+        if (widget.text != null) {
+          result.add(
+            SkeletonBlueprint(
+              kind: SkeletonKind.text,
+              depth: depth + 1,
+              id: '$path/tab/text',
+            ),
+          );
+        }
+      }
+      return;
+    }
+
+    if (widget is Badge) {
+      if (widget.child != null) {
+        _walk(widget.child!, result, depth, '$path/badge/child');
+      }
+      if (widget.isLabelVisible) {
+        result.add(
+          SkeletonBlueprint(
+            kind: widget.label != null
+                ? SkeletonKind.rect
+                : SkeletonKind.circle,
+            depth: depth + 1,
+            id: '$path/badge/indicator',
+          ),
+        );
+      }
+      return;
+    }
+
+    if (widget is ExpansionTile) {
+      if (widget.leading != null) {
+        _walk(
+          widget.leading!,
+          result,
+          depth + 1,
+          '$path/expansionTile/leading',
+        );
+      }
+      _walk(widget.title, result, depth + 1, '$path/expansionTile/title');
+      if (widget.subtitle != null) {
+        _walk(
+          widget.subtitle!,
+          result,
+          depth + 1,
+          '$path/expansionTile/subtitle',
+        );
+      }
+      if (widget.trailing != null) {
+        _walk(
+          widget.trailing!,
+          result,
+          depth + 1,
+          '$path/expansionTile/trailing',
+        );
+      }
+      if (widget.initiallyExpanded) {
+        for (int i = 0; i < widget.children.length; i++) {
+          _walk(
+            widget.children[i],
+            result,
+            depth + 1,
+            '$path/expansionTile/child/$i',
+          );
+        }
+      }
+      return;
+    }
+
+    if (widget is Placeholder) {
+      result.add(
+        SkeletonBlueprint(
+          kind: SkeletonKind.rect,
+          depth: depth,
+          id: '$path/placeholder',
+        ),
+      );
+      return;
+    }
+
     if (widget is ListTile) {
       if (widget.leading != null) {
         _walk(

@@ -45,6 +45,9 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
     if (widget is DecoratedBox) {
       return _extractImageLikeChild(widget.child);
     }
+    if (widget is Badge) {
+      return _extractImageLikeChild(widget.child);
+    }
 
     return null;
   }
@@ -207,6 +210,35 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       );
     }
 
+    if (child is AppBar) {
+      return Size(stackSize.width, child.preferredSize.height);
+    }
+
+    if (child is TabBar) {
+      return Size(stackSize.width, child.preferredSize.height);
+    }
+
+    if (child is Tab) {
+      return const Size(80, 48);
+    }
+
+    if (child is Badge) {
+      return child.child != null
+          ? _estimatePositionedChildSize(child.child!, stackSize)
+          : const Size(24, 24);
+    }
+
+    if (child is ExpansionTile) {
+      return Size(stackSize.width, child.subtitle != null ? 72 : 56);
+    }
+
+    if (child is Placeholder) {
+      return Size(
+        min(stackSize.width, child.fallbackWidth),
+        min(stackSize.height, child.fallbackHeight),
+      );
+    }
+
     if (child is Text) {
       return Size(
         min(stackSize.width * 0.45, 180),
@@ -320,6 +352,20 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
 
     if (child is DropdownMenu) {
       return Size(min(parentSize.width * 0.55, 180), 56);
+    }
+
+    if (child is Tab) {
+      return const Size(80, 48);
+    }
+
+    if (child is Badge) {
+      return child.child != null
+          ? _estimateWrapChildSize(child.child!, parentSize)
+          : const Size(24, 24);
+    }
+
+    if (child is Placeholder) {
+      return Size(min(parentSize.width * 0.4, child.fallbackWidth), 40);
     }
 
     if (child is SizedBox) {
@@ -574,6 +620,20 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
       return min(parentWidth * 0.55, 180.0);
     }
 
+    if (child is Tab) {
+      return 60.0;
+    }
+
+    if (child is Badge) {
+      return child.child != null
+          ? _resolveChildWidthInRow(child.child!, parentWidth, fallback)
+          : 24.0;
+    }
+
+    if (child is Placeholder) {
+      return min(parentWidth, child.fallbackWidth);
+    }
+
     return fallback;
   }
 
@@ -733,6 +793,40 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
 
     if (widget is DropdownMenu) {
       return 56;
+    }
+
+    if (widget is AppBar) {
+      return widget.preferredSize.height;
+    }
+
+    if (widget is SliverAppBar) {
+      return widget.expandedHeight ??
+          (widget.toolbarHeight +
+              (widget.bottom?.preferredSize.height ?? 0.0));
+    }
+
+    if (widget is TabBar) {
+      return widget.preferredSize.height;
+    }
+
+    if (widget is Tab) {
+      return 48;
+    }
+
+    if (widget is Badge) {
+      return widget.child != null
+          ? _estimateWidgetHeight(widget.child!, parentHeight)
+          : 24;
+    }
+
+    if (widget is ExpansionTile) {
+      return widget.subtitle != null ? 72 : 56;
+    }
+
+    if (widget is Placeholder) {
+      return parentHeight.isFinite
+          ? min(parentHeight, widget.fallbackHeight)
+          : widget.fallbackHeight;
     }
 
     if (_isChipLikeWidget(widget)) {
@@ -989,6 +1083,18 @@ extension RenderAutoShimmerSizeResolver on RenderAutoShimmer {
 
     if (child is DropdownMenu) {
       return 56;
+    }
+
+    if (child is Tab) {
+      return 48;
+    }
+
+    if (child is Badge) {
+      return child.child != null ? _estimateRowChildHeight(child.child!) : 24;
+    }
+
+    if (child is Placeholder) {
+      return min(48.0, child.fallbackHeight);
     }
 
     if (child is Padding) {

@@ -313,6 +313,41 @@ extension RenderAutoShimmerWidgetDispatcher on RenderAutoShimmer {
       return;
     }
 
+    if (widget is ExpansionTile) {
+      _paintExpansionTile(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is AppBar) {
+      _paintAppBar(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is SliverAppBar) {
+      _paintSliverAppBar(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is TabBar) {
+      _paintTabBar(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is Tab) {
+      _paintTab(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is Badge) {
+      _paintBadge(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
+    if (widget is Placeholder) {
+      _paintPlaceholder(canvas, widget, offset, availableSize, depth);
+      return;
+    }
+
     if (widget is Padding) {
       final padding = _resolveEdgeInsets(widget.padding);
 

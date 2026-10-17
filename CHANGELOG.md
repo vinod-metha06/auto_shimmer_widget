@@ -1,3 +1,16 @@
+## 1.1.0
+
+- Added skeleton support for Navigation, App Bars & Expansion widgets:
+  - `AppBar` & `SliverAppBar`: Automatic layout for leading icon/back button, title text, and action buttons, with bottom widget support.
+  - `TabBar` & `Tab`: Horizontal distribution of tab placeholders with active tab indicator line.
+  - `Badge`: Small dot or pill counter overlay on icons/avatars.
+  - `ExpansionTile`: Support for leading widget, title, subtitle, trailing chevron icon, and expanded child items.
+  - `Placeholder`: Polished shimmering cross-line placeholder box.
+- Added full RTL directionality awareness for `AppBar`, `SliverAppBar`, `ExpansionTile`, and `Badge`.
+- Updated `WidgetBlueprintParser` with blueprint parsing for navigation and expandable widgets.
+- Updated size heuristics in `size_resolver` for all navigation widgets.
+- Added comprehensive unit and widget tests for `v1.1.0`.
+
 ## 1.0.0
 
 - Added first-class skeleton support for Form Controls & Selection Inputs:

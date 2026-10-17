@@ -640,3 +640,4 @@ enum _SelectionControlType {
   switchControl,
   radio,
 }
+
